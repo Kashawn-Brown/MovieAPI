@@ -22,7 +22,8 @@ const movieSchema = new Schema({
       type: {type: String, required: true },
       name: {type: String, required: true },
     }],
-    averageRating: { type: Number, required: true, default: null },
+    ratings: {type: [Number], required: true},
+    averageRating: { type: Number, required: true, default: -1 },
     moreInfo: 
     {
       director: [{

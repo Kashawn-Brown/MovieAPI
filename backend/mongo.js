@@ -1,10 +1,21 @@
 const mongoose = require('mongoose');
 const axios = require('axios');
-const express = require('express');
+require('dotenv').config({ path: '../.env' });
+
+// Retrieving sensitive information from .env file
+const apiKey = process.env.API_KEY;
+const user = process.env.MONGO_USER
+const password = process.env.MONGO_PASSWORD
+const cluster = process.env.MONGO_CLUSTER
+const database = process.env.MONGO_DATABASE
+
+// Building mongoDb URI
+const mongodbURI = `mongodb+srv://${user}:${password}@${cluster}/${database}`
+
 
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://csKash:KBrown24$@cluster0.6zzrech.mongodb.net/movie-api-db');
+mongoose.connect(mongodbURI);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {
@@ -15,22 +26,23 @@ db.once('open', () => {
 // Use Schema set up for storing the Movies in database
 const Movie = require('./models/movieSchema');
 
+
 //Function to get all the movies I will have in my catalog
 async function getMovies()
 {
   try
   {
     // Removing any movies currently in my database to repopulate
-    await Movie.deleteMany({})
-    console.log('Existing Movies deleted from MongoDB');
+    await Movie.deleteMany({}) // Later will iplement no movies to be removed, but only adding movies that are new to the response (1)
+    console.log('Existing Movies deleted from MongoDB'); // (1)
 
-    // Setting the configurations for my Get request
+    // Setting the configurations for my Get request (Getting the current list of the most popular movies)
     const movieOptions = {
       method: 'GET',
       url: 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1',
       headers: {
         accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODNhNzNhYzJiZGY2NzkxMDc0NmNiZTcyZTZiOWQ3ZCIsInN1YiI6IjY1ZmE0OTgyM2ZlMTYwMDE3ZGYyZmVkZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.nyylRGgK9AFIfsG88db_jgSt9pYNcuXATtM1F1u21ww'
+        Authorization: 'Bearer ' + apiKey
       }
     };
 
@@ -43,19 +55,19 @@ async function getMovies()
 
     });
 
-    console.log(movies);
 
 
     for (let movie of movies) {
       const movieInfo = await getMoviesInfo(movie);
       const moviePeople = await getMoviesPeople(movie);
       const movieTrailer = await getMoviesTrailer(movie);
-      Object.assign(movie, movieInfo, moviePeople, movieTrailer, {averageRating: -1});
+      Object.assign(movie, movieInfo, moviePeople, movieTrailer);
     }
 
-    console.log(movies);
+    // console.log(movies);
 
 
+    // Testing implementations using just the first movie in response
     // const movieInfo = await getMoviesInfo(movies[0]);
     // const moviePeople = await getMoviesPeople(movies[0]);
     // const movieTrailer = await getMoviesTrailer(movies[0]);
@@ -68,6 +80,9 @@ async function getMovies()
     await Movie.insertMany(movies)
     console.log("Movies stored in MongoDB")
 
+    // Add movies to the database if they do not exist
+    // await addNewMovies(movies); // (1)
+
 
 
   } catch (error) {
@@ -78,13 +93,14 @@ async function getMovies()
 
 
 
-const getMoviesInfo = async (movie) => {
+async function getMoviesInfo(movie) 
+{
   const movieInfoOptions = {
     method: 'GET',
     url: `https://api.themoviedb.org/3/movie/${movie.tmdbId}?language=en-US`,
     headers: {
       accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODNhNzNhYzJiZGY2NzkxMDc0NmNiZTcyZTZiOWQ3ZCIsInN1YiI6IjY1ZmE0OTgyM2ZlMTYwMDE3ZGYyZmVkZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.nyylRGgK9AFIfsG88db_jgSt9pYNcuXATtM1F1u21ww'
+      Authorization: 'Bearer ' + apiKey    
     }
   };
 
@@ -115,13 +131,14 @@ const getMoviesInfo = async (movie) => {
 }
 
 
-const getMoviesPeople = async (movie) => {
+async function getMoviesPeople(movie) 
+{
   const moviePeopleOptions = {
     method: 'GET',
     url: `https://api.themoviedb.org/3/movie/${movie.tmdbId}/credits?language=en-US`,
     headers: {
       accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODNhNzNhYzJiZGY2NzkxMDc0NmNiZTcyZTZiOWQ3ZCIsInN1YiI6IjY1ZmE0OTgyM2ZlMTYwMDE3ZGYyZmVkZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.nyylRGgK9AFIfsG88db_jgSt9pYNcuXATtM1F1u21ww'
+      Authorization: 'Bearer ' + apiKey    
     }
   };
 
@@ -188,13 +205,14 @@ const getMoviesPeople = async (movie) => {
 
 
 // Have to find out how to determine which trailer for those with multiple
-const getMoviesTrailer = async (movie) => {
+async function getMoviesTrailer(movie) 
+{
   const movieTrailerOptions = {
     method: 'GET',
     url: `https://api.themoviedb.org/3/movie/${movie.tmdbId}/videos?language=en-US`,
     headers: {
       accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODNhNzNhYzJiZGY2NzkxMDc0NmNiZTcyZTZiOWQ3ZCIsInN1YiI6IjY1ZmE0OTgyM2ZlMTYwMDE3ZGYyZmVkZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.nyylRGgK9AFIfsG88db_jgSt9pYNcuXATtM1F1u21ww'
+      Authorization: 'Bearer ' + apiKey    
     }
   };
 
@@ -233,6 +251,36 @@ const getMoviesTrailer = async (movie) => {
   }
 }
 
+
+// Function that will allow only new movies to be added to the database, rather tha having all movies removed then repopulated
+// async function addNewMovies(movie)
+// {
+//   try {
+
+//     // Find all existing tmdbIds in the database
+//     const existingMovies = await Movie.find({}, { tmdbId: 1 });
+
+//     // Extract tmdbIds from existingMovies
+//     const existingTmdbIds = existingMovies.map(movie => movie.tmdbId);
+
+//     // Filter movies to only include those not in the database
+//     const moviesToAdd = movies.filter(movie => !existingTmdbIds.includes(movie.tmdbId));
+
+//     // Add movies to the database
+//     if (moviesToAdd.length > 0) 
+//     {
+//       await Movie.insertMany(moviesToAdd);
+//       console.log(`${moviesToAdd.length} movies added to the database.`);
+//     } 
+//     else 
+//     {
+//       console.log('No new movies to add.');
+//     }
+
+//   } catch (error) {
+//     console.error('Error:', error);
+//   }
+// }
 
 
 
