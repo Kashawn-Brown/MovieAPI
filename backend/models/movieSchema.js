@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const movieSchema = new Schema({
 
-    tmdbId: { type: String, required: true },
+    tmdbId: { type: String, required: true, unique: true },
     title: { type: String, required: true },
     overview: { type: String, required: true },
     releaseDate: { type: Date, required: true },
@@ -47,13 +47,32 @@ const movieSchema = new Schema({
     },
     reviews: 
     [{ 
-      rating: { type: String, required: true },
-      author: { type: String, required: false },
-      review: { type: String, required: false },
+      rating: { type: Number, required: true },
+      author: { type: String, required: true, default: "Anonymous" },
+      review: { type: String, required: true, default: "N/A" },
       reviewId: { type: String, required: true },
     }],
 
 });
+
+// With this whenever a new rating is added to the ratings array and the document is saved, 
+// the averageRating will be recalculated based on the updated ratings array. 
+// If there are no ratings, averageRating will be set back to -1.
+movieSchema.pre('save', function(next) 
+{
+  if (this.ratings.length > 0) 
+  {
+      const sum = this.ratings.reduce((acc, curr) => acc + curr, 0);
+      this.averageRating = (sum / this.ratings.length).toFixed(1);
+  } 
+  else 
+  {
+      this.averageRating = -1;
+  }
+  next();
+});
+
+
 
 const Movie = mongoose.model('Movie', movieSchema);
 
