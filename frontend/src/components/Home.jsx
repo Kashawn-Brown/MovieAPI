@@ -1,4 +1,4 @@
-import '../styles/Home.css';
+import styles from '../styles/Home.module.css';
 import Carousel from 'react-material-ui-carousel'
 import { Paper } from '@mui/material'
 import React from 'react'
@@ -12,40 +12,40 @@ const Home = ({movies}) => {
   
   return (
     <div>
-      <div className='movie-carousel-container'>
-        <Carousel>
-          {
-            movies/*?.slice(0,1)*/?.map((movie) => {
-              return(
-                <Paper key={movie.tmdbId}>
-                  <div className = 'movie-card-container'>
-                    <div className = 'movie-card' style={{"--img": `url(${movie.backdrop})`}}>
-                      <div className = 'movie-detail'>
-                        <div className = 'movie-poster'>
-                          <img src={movie.poster} alt ="" />
-                        </div> 
-                        <div className = 'movie-title'>
-                          <h4> {movie.title} </h4>
-                          <div className="movie-buttons-container">
-                          <Link to={`/Trailer/${movie.trailerLink[0].key}`}>
-                            <div className="play-button-icon-container">
-                              <FontAwesomeIcon className="play-button-icon" icon={faCirclePlay} />
-                            </div>
-                          </Link>
-                        </div>
-                        </div>
-                        <div className="blank">
-                        </div>
-                      </div>
-                    </div>    
+      <div className={styles['movie-carousel-container']}>
+  <Carousel>
+    {
+      movies/*?.slice(8,9)*/?.map((movie) => {
+        return(
+          <Paper key={movie.tmdbId}>
+            <div className={styles['movie-card-container']}>
+              <div className={styles['movie-card']} style={{ "--img": `url(${movie.backdrop})` }}>
+                <div className={styles['movie-detail']}>
+                  <div className={styles['movie-poster']}>
+                    <img src={movie.poster} alt="" />
                   </div>
-                </Paper>
-              )
-            })
-          }
-        </Carousel>
-      </div>
-      <div className="movies-list">
+                  <div className={styles['movie-title']}>
+                    <h4> {movie.title} </h4>
+                    <div className={styles['movie-buttons-container']}>
+                      <Link to={`/Trailer/${movie.trailerLink[0].key}`}>
+                        <div className={styles['play-button-icon-container']}>
+                          <FontAwesomeIcon className={styles['play-button-icon']} icon={faCirclePlay} />
+                        </div>
+                      </Link>
+                    </div>
+                  </div>
+                  <div className={styles['blank']}>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Paper>
+        )
+      })
+    }
+  </Carousel>
+</div>
+      <div className={styles["movies-list"]}>
         Featured Movies here
       </div>
     </div>

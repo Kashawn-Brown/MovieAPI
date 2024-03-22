@@ -1,0 +1,105 @@
+.movies-container {
+    display: flex;
+    justify-content: space-between;
+    /* margin-top: 80px; Add margin to the top of the movies grid to prevent overlap with the fixed panel */
+}
+  
+.genre-panel {
+    position: sticky;
+    top: 0;
+    height: 100vh; /* Make it full height */
+    overflow-y: auto; /* Allow it to scroll if content exceeds height */
+    width: 15vw;
+    min-width: 130px;
+    max-width: 250px;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+.genre-panel h2 {
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.genre-panel ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.genre-panel li {
+    margin-bottom: 5px;
+    cursor: pointer;
+    color: #000;
+}
+
+.movies-grid {
+    width: 80vw;
+    min-width: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+@media (min-width: 1200px) {
+    .movies-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+.movie-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid gold;
+    /* background-color: #fff; */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+}
+
+.movie-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.movie-info {
+    padding: 15px;
+    text-align: center;
+}
+
+.title{
+    justify-content: center; /* Center the title horizontally */
+    font-size: 1.5em; /* Increase title size */
+    font-weight: bold; /* Make the font thicker */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+    margin: 0px;
+}
+
+/* Additional styling for the movie details page link */
+.movie-card a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Ensure the genre panel stays within the viewport */
+/* @media only screen and (max-width: 800px) {
+    .genre-panel {
+      position: relative;
+      width: 100%;
+      height: auto;
+      overflow-y: visible;
+    }
+  
+    .movies-grid {
+      margin-left: 0;
+      width: 100%;
+    }
+  } */
+  

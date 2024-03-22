@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/Movies.css'; // Make sure the path is correct
+import styles from '../styles/Movies.module.css';
 
 const Movies = ({ movies }) => {
   const genres = [
@@ -19,8 +19,8 @@ const Movies = ({ movies }) => {
   };
 
   return (
-    <div className="movies-container">
-      <div className="genre-panel">
+    <div className={styles['movies-container']}>
+      <div className={styles['genre-panel']}>
         <h2>Genres</h2>
         <ul>
           {genres.map((genre) => (
@@ -28,14 +28,13 @@ const Movies = ({ movies }) => {
           ))}
         </ul>
       </div>
-      <div className="movies-grid">
+      <div className={styles['movies-grid']}>
         {movies?.map((movie) => (
-          <div key={movie.tmdbId} className="movie-card" onClick={() => handleMovieClick(movie.id)}>
-            <Link to={`/movies/${movie.id}`}>
-              <img src={movie.poster} alt={movie.title} className="movie-image" />
-              <div className="movie-info">
-                <h3>{movie.title}</h3>
-                <p>{movie.releaseDate}</p>
+          <div key={movie.tmdbId} className={styles['movie-card']} onClick={() => handleMovieClick(movie.tmdbId)}>
+            <Link to={`/movies/${movie.tmdbId}`}>
+              <img src={movie.poster} alt={movie.title} className={styles['movie-image']} />
+              <div className={styles['movie-info']}>
+                <h3 className={styles['title']}>{movie.title}</h3>
               </div>
             </Link>
           </div>
