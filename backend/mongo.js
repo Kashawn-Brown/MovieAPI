@@ -228,7 +228,7 @@ async function getMoviesTrailer(movie)
       trailerLink: []
     } 
     
-    const trailers = movieData.filter(video => video.type === "Trailer");
+    const trailers = movieData.filter(video => video.type === "Trailer" && video.site === "YouTube");
 
     trailers.forEach(trailer => {
       trailerLinks.trailerLink.push({

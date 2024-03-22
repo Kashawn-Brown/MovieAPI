@@ -2,6 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
+const cors = require('cors');
 
 // Getting access to .env file
 require('dotenv').config({ path: '../.env' });
@@ -10,6 +11,7 @@ require('dotenv').config({ path: '../.env' });
 //creating instance of Express application
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json()); //or can apparently use express.json() ~ bodyparser.json vs express.json
 
 

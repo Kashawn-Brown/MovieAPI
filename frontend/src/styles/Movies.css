@@ -1,0 +1,76 @@
+.movies-container {
+    display: flex;
+    justify-content: space-between;
+}
+  
+.genre-panel {
+    width: 15vw;
+    min-width: 130px;
+    max-width: 250px;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+.genre-panel h2 {
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.genre-panel ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.genre-panel li {
+    margin-bottom: 5px;
+    cursor: pointer;
+    color: #000;
+}
+
+.movies-grid {
+    width: 80vw;
+    min-width: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+@media (min-width: 1200px) {
+    .movies-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+.movie-card {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.movie-card:hover {
+transform: translateY(-5px);
+}
+
+.movie-image {
+width: 100%;
+height: auto;
+display: block;
+}
+
+.movie-info {
+padding: 10px;
+text-align: center;
+}
+
+/* Additional styling for the movie details page link */
+.movie-card a {
+text-decoration: none;
+color: inherit;
+}
+  
