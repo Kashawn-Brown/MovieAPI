@@ -9,6 +9,7 @@ import Header from './components/Header'
 import Movies from './components/Movies'
 import Movie from './components/Movie'
 import Trailer from './components/Trailer'
+import Reviews from './components/Reviews'
 import NotFound from './components/NotFound'
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
           <Route path="/" element={ <Home movies={movies} /> } />
           <Route path="/movies" element={ <Movies movies={movies} /> } />
           <Route path="/movies/:movieId" element={ <Movie/> } />
+          <Route path="/movies/:movieId/reviews" element={ <Reviews/> } />
           <Route path="/Trailer/:trailerKey" element={ <Trailer/> } />
           <Route path="*" element={ <NotFound/> } />
         </Route>

@@ -61,7 +61,8 @@ async function getMovies()
       const movieInfo = await getMoviesInfo(movie);
       const moviePeople = await getMoviesPeople(movie);
       const movieTrailer = await getMoviesTrailer(movie);
-      Object.assign(movie, movieInfo, moviePeople, movieTrailer);
+      const moviePictures = awaitgetMoviesPictures(movie);
+      Object.assign(movie, movieInfo, moviePeople, movieTrailer, moviePictures);
     }
 
     // console.log(movies);
@@ -111,10 +112,22 @@ async function getMoviesInfo(movie)
     const genres = movieData.genres.map(genre => genre.name);
     const baseImageURL = "https://image.tmdb.org/t/p/original"
     
+    // Setting up release date
+    let releaseDate = null
+    let releaseYear = -1
+    if(movieData.release_date)
+    {
+      releaseDate = movieData.release_date.toLocaleDateString();
+      releaseYear = date.getFullYear()
+    }
+
+    
+    
     const movieInfo = {
       title: movieData.title,
       overview: movieData.overview,
-      releaseDate: movieData.release_date,
+      releaseDate: releaseDate,
+      releaseYear: releaseYear,
       status: movieData.status,
       genres: genres,
       poster: baseImageURL + movieData.poster_path,
@@ -220,12 +233,12 @@ async function getMoviesTrailer(movie)
     const response = await axios.request(movieTrailerOptions);
     // console.log(response.data);
     let movieData = response.data.results
-    const baseImageURL = "https://image.tmdb.org/t/p/original"
 
     // console.log(movieData)
 
     trailerLinks ={ 
-      trailerLink: []
+      trailerLink: [],
+      videos: []
     } 
     
     const trailers = movieData.filter(video => video.type === "Trailer" && video.site === "YouTube");
@@ -240,12 +253,72 @@ async function getMoviesTrailer(movie)
       });
     });
 
+    const vids = movieData.filter(video => video.site === "YouTube");
+
+    vids.forEach(vid => {
+      trailerLinks.videos.push({
+        site: vid.site,
+        key: vid.key,
+        id: vid.id, 
+        type: vid.type,
+        name: vid.name
+      });
+    });
+
       return trailerLinks
       
 
 
     
     
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function getMoviesPictures(movie) 
+{
+  const moviePictureOptions = {
+    method: 'GET',
+    url: `https://api.themoviedb.org/3/movie/${movie.tmdbId}/images`,
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer ' + apiKey    
+    }
+  };
+
+  try {
+    const response = await axios.request(moviePictureOptions);
+    // console.log(response.data);
+    let movieData = response.data.results
+    const baseImageURL = "https://image.tmdb.org/t/p/original"
+
+    const resp = {
+      posters: [],
+      backdrops: [],
+      logos: []
+    }
+
+
+    
+    const postersResponse = movieData.posters;
+    const backdropsResponse = movieData.backdrops
+    const logosResponse = movieData.logos
+
+    postersResponse.forEach(poster => {
+      resp.posters.push(poster);
+    });
+    backdropsResponse.forEach(backdrop => {
+      resp.backdrops.push(backdrop);
+    });
+    logosResponse.forEach(logo => {
+      resp.logos.push(logo);
+    });
+
+
+
+      return resp
+  
   } catch (error) {
     console.error(error);
   }

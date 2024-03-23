@@ -7,14 +7,27 @@ const movieSchema = new Schema({
     tmdbId: { type: String, required: true, unique: true },
     title: { type: String, required: true },
     overview: { type: String, required: true },
-    releaseDate: { type: Date, required: true },
+    releaseDate: { type: String, required: true, default: null},
+    releaseYear: {type: Number, required: true, default:-1},
     status: { type: String, required: true },
     genres: { type: [String], required: true },
     poster: { type: String, required: true },
     backdrop: { type: String, required: true },
+    posters: [{ type: String, required: true }],
+    backdrops: [{ type: String, required: true }],
+    logos: [{ type: String, required: true }],
     originalLanguage: { type: String, required: false },
+    runtime: {type: Number, required: true, default: -1},
     adult: { type: Boolean, required: false, default: false },    
     trailerLink: 
+    [{ 
+      site: {type: String, required: true },
+      key: {type: String, required: true },
+      id: {type: String, required: true },
+      type: {type: String, required: true },
+      name: {type: String, required: true },
+    }],
+    videos: 
     [{ 
       site: {type: String, required: true },
       key: {type: String, required: true },
@@ -49,9 +62,13 @@ const movieSchema = new Schema({
     [{ 
       rating: { type: Number, required: true },
       author: { type: String, required: true, default: "Anonymous" },
-      review: { type: String, required: true, default: "N/A" },
+      review: {
+        heading: {type: String, default: ""},
+        content: {type: String, default: ""}
+      },
       reviewId: { type: String, required: true },
     }],
+    
 
 });
 

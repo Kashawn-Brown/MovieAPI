@@ -1,0 +1,184 @@
+.movie-container {
+
+}
+
+.movie-info-container-bg {
+    background-repeat: no-repeat;
+    width: 100%;
+    /* height: 100%; */
+    height: 600px;
+    background-size: cover;
+    /* border-radius: 8px; */
+    z-index: 1;
+    position: relative;
+
+}
+
+.movie-info-container {
+    width: 100%;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    background-image: linear-gradient(to right, rgba(31.5, 31.5, 31.5, 1) calc((50vw - 170px) - 340px), rgba(31.5, 31.5, 31.5, 0.84) 50%, rgba(31.5, 31.5, 31.5, 0.84) 100%);
+}
+
+.movie-poster-container {
+    display: flex;
+    align-items: center;
+
+}
+
+.movie-poster {
+    width: 300px;
+    height: 450px;
+    overflow: hidden;
+    border-radius: 8px;
+    margin: 20px;
+
+
+}
+
+.movie-image {
+    width: 100%;
+    height: 100%;
+
+}
+
+.movie-information-container {
+    width: 60vw; /*55vw*/
+    max-width: 800px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    margin-left: 50px;
+
+}
+
+.movie-information {
+    height: 450px;
+
+}
+
+.movie-information-title {
+    padding-top: 15px;
+
+}
+
+.movie-title {
+    font-size: 2em; /* Increase title size */
+    font-weight: bold; /* Make the font thicker */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+    margin-bottom: 10px; /* Space between title and button */
+}
+
+.release-year {
+    font-weight: 400; /* Ensures the font weight is normal, not bold or anything else */
+    color: rgba(255, 255, 255, 0.8);
+    margin-left: 2px;
+}
+
+.movie-status {
+    font-size: medium;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.8);
+    margin-left: 2px;
+}
+
+.movie-release {
+    font-size: small;
+    font-weight: 400;
+    margin-top: -8px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* An id so that it overrides the default button rules */
+/* Test rules on inspect then add here */
+#user-button {
+    --bs-btn-bg: transparent;
+    border: none;
+    font-size: 20px;
+    --bs-btn-color: #0dcaf0;
+    --bs-btn-hover-bg: rgb(33, 37, 41);
+}
+
+.movie-information-overview {
+
+}
+
+.movie-extra-info-container {
+    height: 400px;
+
+}
+
+.review-container {
+    height: auto;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* .movie-detail-container {
+    display: flex;
+    margin: 20px;
+}
+
+.movie-poster {
+    width: 300px;
+    height: 450px;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+.movie-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.movie-info {
+    flex: 1;
+}
+
+.movie-info h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.movie-info p {
+    margin-bottom: 5px;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.button:hover {
+    background-color: #0056b3;
+} */
