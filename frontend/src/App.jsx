@@ -10,6 +10,7 @@ import Movies from './components/Movies'
 import Movie from './components/Movie'
 import Trailer from './components/Trailer'
 import Reviews from './components/Reviews'
+import Login from './components/Login'
 import NotFound from './components/NotFound'
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
       <Routes>
         <Route path="/" element={ <Layout/> } >
           <Route path="/" element={ <Home movies={movies} /> } />
+          <Route path="/login" element={ <Login/> } />
           <Route path="/movies" element={ <Movies movies={movies} /> } />
           <Route path="/movies/:movieId" element={ <Movie/> } />
           <Route path="/movies/:movieId/reviews" element={ <Reviews/> } />

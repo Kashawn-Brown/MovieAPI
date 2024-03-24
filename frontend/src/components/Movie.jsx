@@ -6,7 +6,7 @@ import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faBookmark, faHeart, faVideo } from "@fortawesome/free-solid-svg-icons";
-import { Button } from 'react-bootstrap';
+import { Button, FloatingLabel, Form, InputGroup, } from 'react-bootstrap';
 
 
 const Movie = () => {
@@ -60,7 +60,7 @@ const Movie = () => {
                             <Button id={styles["user-button"]}> <FontAwesomeIcon icon={faCircleCheck} /> </Button>
                             <Button id={styles["user-button"]}> <FontAwesomeIcon icon={faBookmark}  /> </Button>
                             <Button id={styles["user-button"]}> <FontAwesomeIcon icon={faHeart}  /> </Button>
-                            <Button id={styles["user-button"]}> <FontAwesomeIcon icon={faVideo}  /> </Button>
+                            <Button href={`/Trailer/${movie.trailerLink[0].key}`} id={styles["user-button"]}> <FontAwesomeIcon icon={faVideo}  /> </Button>
                             <br/>Watched - Watchlist - Favourite - Trailer<br/> <br/> 
                         </div>
                         <div className={styles['movie-overview']}>
@@ -77,80 +77,94 @@ const Movie = () => {
                 </div>
             </div>
         </div>
-        <div className='movie-extra-info-container-bg'>
-            <section className={styles['movie-extra-info-container']}>
-                <section className='movie-cast-and-crew-container'>
-                    <div className='movie-cast-and-crew'>
-                        <div className='movie-person-container'>
-                            {/* list in her going through each person */}
+        <div className={styles['movie-info-p2-container-bg']}>
+            <div className={styles['movie-info-p2-container']}>
+                <section className={styles['movie-extra-info-container']}>
+                    <section className={styles['movie-cast-and-crew-container']}>
+                        <div className={styles['movie-cast-and-crew']}>
+                            <div className={styles['movie-person-container']}>
+                                {/* list in her going through each person */}
+                            </div>
                         </div>
-                    </div>
-                </section>
-                <section className='movie-media'>
-                    <div className='movie-media-menu'>
+                    </section>
+                    <section className={styles['movie-media']}>
+                        <div className={styles['movie-media-menu']}>
 
-                    </div>
+                        </div>
+                    </section>
+                    Cast & Crew - Trailer Links - All Posters/Backdrops - Budget/Revenue 
                 </section>
-                Cast & Crew - Trailer Links - All Posters/Backdrops - Budget/Revenue
-            </section>
-            <section className={styles['review-container']}>
-                <h3>Past Reviews and Ratings - Create Review/Rating</h3>
-                <section className={styles['movie-reviews-container']}>
-                    <div className={styles['movie-reviews']}>
-                        {movie.reviews.filter((userReview) =>  userReview.review && userReview.review.trim() !== "" && userReview.review !== "N/A")
-                        .slice(0,1)
-                        .map((userReview) => {
-                            if (userReview.review && userReview.review.trim() !== "" && userReview.review !== "N/A") 
-                            {
-                                return (
-                                    <div className={styles['movie-review']} key={userReview.reviewId}>
-                                        <div className={styles['movie-review-heading']}> 
-                                            <div className={styles['movie-review-user']}> {userReview.author}</div>
-                                            <div className={styles['movie-review-rating']}>
-                                                <Rating name={`${userReview.reviewId}-rating`} value={userReview.rating} readOnly />
+                <section className={styles['review-container']}>
+                    <h3>Past Reviews and Ratings - Create Review/Rating</h3>
+                    <section className={styles['movie-reviews-container']}>
+                        <div className={styles['movie-reviews']}>
+                            {movie.reviews.filter((userReview) =>  userReview.review && userReview.review.trim() !== "" && userReview.review !== "N/A")
+                            .slice(0,1)
+                            .map((userReview) => {
+                                if (userReview.review && userReview.review.trim() !== "" && userReview.review !== "N/A") 
+                                {
+                                    return (
+                                        <div className={styles['movie-review']} key={userReview.reviewId}>
+                                            <div className={styles['movie-review-heading']}> 
+                                                <div className={styles['movie-review-user']}> {userReview.author}</div>
+                                                <div className={styles['movie-review-rating']}>
+                                                    <Rating name={`${userReview.reviewId}-rating`} value={userReview.rating} readOnly />
+                                                </div>
+                                                {/* <div className={styles['movie-review-title']}> {userReview.review.header} </div> */}
                                             </div>
-                                            {/* <div className={styles['movie-review-title']}> {userReview.review.header} </div> */}
+                                            <div className={styles['movie-review-content']}> {userReview.review}<br/><br/> </div>
                                         </div>
-                                        <div className={styles['movie-review-content']}> {userReview.review}<br/><br/> </div>
-                                    </div>
-                                )}
-                            else 
-                            {
-                                return null;
-                            }
-                        })}
-                    <Link to={`/movies/${movie.tmdbId}/reviews`}>
-                        <button className={styles['see-all-reviews-button']}>See All Reviews</button>
-                    </Link>
-                    </div>
-                </section>
-                <section className={styles['create-review-container hide']}>
-                    <div className={styles['create-review']}>
-                        <div className={styles['create-rating']}>
-                            <Rating 
-                            name="user-rating" 
-                            defaultValue={4.5} 
-                            precision={0.5}
-                            size="large"
-                            onChange={(event, newValue) => {
-                                setRating(newValue);
-                              }}  
-                            />
+                                    )}
+                                else 
+                                {
+                                    return null;
+                                }
+                            })}
+                        <Link to={`/movies/${movie.tmdbId}/reviews`}>
+                            <Button className={styles['see-all-reviews-button']}>See All Reviews</Button>
+                        </Link>
                         </div>
-                        <div className={styles['create-review-user']}>
-                            <input type="text" placeholder="Your name" />
-                        </div>
-                        <div className={styles['create-review-content-container']}>
-                            <div className={styles['create-review-heading']}>
-                                <input type="text" placeholder="Review title" />
+                    </section>
+                    <section className={styles['create-review-container']}> <br/>
+                    <h2>Create Review</h2>
+                        <div className={styles['create-review hide']}><br/>
+                            
+                            <div className={styles['create-review-user']}>
+                                {/* <input type="text" placeholder="Your name" /> */}
+                                <InputGroup style={{ width: '500px' }}>
+                                    <InputGroup.Checkbox />
+                                    <Form.Control type="text" placeholder="User Name" /*disabled*/ readOnly />
+                                </InputGroup> <br/>
                             </div>
-                            <div className={styles['create-review-content']}>
-                                <textarea placeholder="Write your review..." />
+                            <div className={styles['create-rating']}>
+                                <Rating 
+                                name="user-rating" 
+                                defaultValue={4.5} 
+                                precision={0.5}
+                                size="large"
+                                onChange={(event, newValue) => {
+                                    setRating(newValue);
+                                }}  
+                                /> <br/>
+                            </div>
+                            <div className={styles['create-review-content-container']}>
+                                <div className={styles['create-review-heading']}>
+                                    {/* <input type="text" placeholder="" /> */}
+                                    <Form.Control type="text" placeholder="Review headline" style={{ width: '500px' }} /> <br/>
+                                </div>
+                                <div className={styles['create-review-content']}>
+                                    {/* <textarea placeholder="Write your review..." /> */}
+                                    <FloatingLabel
+                                    controlId="floatingTextarea"
+                                    label="Write your review...">
+                                        <Form.Control as="textarea" label="Write your review..." style={{ height: '100px', width: '500px' }} />
+                                    </FloatingLabel>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
                 </section>
-            </section>
+            </div>
         </div>
     </div>
   )

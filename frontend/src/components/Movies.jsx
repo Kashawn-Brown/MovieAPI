@@ -28,6 +28,7 @@ const Movies = ({ movies }) => {
           ))}
         </ul>
       </div>
+      <div className={styles['movies']}>
       <div className={styles['movies-grid']}>
         {movies?.map((movie) => (
           <div key={movie.tmdbId} className={styles['movie-card']} onClick={() => handleMovieClick(movie.tmdbId)}>
@@ -39,6 +40,7 @@ const Movies = ({ movies }) => {
             </Link>
           </div>
         ))}
+      </div>
       </div>
     </div>
   );
