@@ -1,29 +1,22 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation  } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useParams  } from 'react-router-dom';
 import styles from '../styles/Movies.module.css';
 
-const Movies = ({movies}) => {
+const MoviesGenre = () => {
     // console.log(movies)
-    // const location = useLocation();
-    // var movies = location.state?.movies;
+    const location = useLocation();
+    var movies = location.state?.movies;
+    var allGenres = location.state?.allGenres;
+    
+    const  currentGenre  = useParams().genre;
+    console.log(currentGenre)
+
     const navigate = useNavigate();
-
-
-    // Extract all genres from movies and flatten the array
-    const allGenres = movies?.reduce((genres, movie) => {
-        movie.genres.forEach(genre => {
-            if (!genres.some(existingGenre => existingGenre.genreId === genre.genreId)) 
-            {
-                genres.push({ genreId: genre.genreId, genre: genre.genre });
-            }
-        });
-        return genres;
-    }, []);
 
 // console.log(allGenres)
 
 
-  const handleGenreClick = async (genre) => {
+const handleGenreClick = async (genre) => {
     try {
       const response = await fetch(`http://localhost:5000/api/v1/movies/genre/${genre.genre}`);
       const data = await response.json();
@@ -40,7 +33,7 @@ const Movies = ({movies}) => {
         <h2>Genres</h2>
         <ul>
           {allGenres?.map((genre) => (
-            <li key={genre.genreId} onClick={() => handleGenreClick(genre)}>
+            <li key={genre.genreId} onClick={() => handleGenreClick(genre)} style={{ fontWeight: genre.genre === currentGenre ? 'bold' : 'normal' }}>
                 {genre.genre}
             </li>
           ))}
@@ -64,4 +57,4 @@ const Movies = ({movies}) => {
   );
 };
 
-export default Movies;
+export default MoviesGenre;

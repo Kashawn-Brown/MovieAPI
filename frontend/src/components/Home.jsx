@@ -22,7 +22,7 @@ const Home = ({movies}) => {
               <div className={styles['movie-card']} style={{ "--img": `url(${movie.backdrop})` }}>
                 <div className={styles['movie-detail']}>
                   <div className={styles['movie-poster']}>
-                    <img src={movie.poster} alt="" />
+                    <Link to={`/movie/${movie.tmdbId}`}><img src={movie.poster} alt="" /> </Link>
                   </div>
                   <div className={styles['movie-title']}>
                     <h4> {movie.title} </h4>

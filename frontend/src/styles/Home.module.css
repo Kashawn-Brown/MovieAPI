@@ -10,7 +10,7 @@
     border-radius: 8px;
     overflow: hidden;
 }
-.movie-poster > img{
+.movie-poster > a > img{
     height: 100%;
     width: 100%;
 }

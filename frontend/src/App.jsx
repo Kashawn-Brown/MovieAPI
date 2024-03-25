@@ -7,6 +7,7 @@ import Layout from './components/Layout'
 import Home from './components/Home'
 import Header from './components/Header'
 import Movies from './components/Movies'
+import MoviesGenre from './components/MoviesGenre'
 import Movie from './components/Movie'
 import Trailer from './components/Trailer'
 import Reviews from './components/Reviews'
@@ -51,7 +52,8 @@ function App() {
           <Route path="/" element={ <Home movies={movies} /> } />
           <Route path="/login" element={ <Login/> } />
           <Route path="/movies" element={ <Movies movies={movies} /> } />
-          <Route path="/movies/:movieId" element={ <Movie/> } />
+          <Route path="/movies/genre/:genre" element={ <MoviesGenre/> } />
+          <Route path="/movie/:movieId" element={ <Movie/> } />
           <Route path="/movies/:movieId/reviews" element={ <Reviews/> } />
           <Route path="/Trailer/:trailerKey" element={ <Trailer/> } />
           <Route path="*" element={ <NotFound/> } />
