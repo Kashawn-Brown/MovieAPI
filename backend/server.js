@@ -10,7 +10,6 @@ require('dotenv').config({ path: '../.env' });
 
 //creating instance of Express application
 const app = express();
-
 app.use(cors());
 app.use(bodyParser.json()); //or can apparently use express.json() ~ bodyparser.json vs express.json
 
@@ -18,6 +17,8 @@ app.use(bodyParser.json()); //or can apparently use express.json() ~ bodyparser.
 //Setting up routes for different parts of applictaion
 app.use('/api/v1/movies', require('./routes/movies'));
 app.use('/api/v1/movies/reviews', require('./routes/reviews'));
+app.use('/api/v1/authorization', require('./routes/authorization'));
+app.use('/api/v1/list', require('./routes/lists'));
 
 
 //Port is initialized with the value of the environment if set, or 5000

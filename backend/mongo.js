@@ -33,8 +33,8 @@ async function getMovies()
   try
   {
     // Removing any movies currently in my database to repopulate
-    await Movie.deleteMany({}) // Later will iplement no movies to be removed, but only adding movies that are new to the response (1)
-    console.log('Existing Movies deleted from MongoDB'); // (1)
+    // await Movie.deleteMany({}) // Later will iplement no movies to be removed, but only adding movies that are new to the response (1)
+    // console.log('Existing Movies deleted from MongoDB'); // (1)
 
     // Setting the configurations for my Get request (Getting the current list of the most popular movies)
     const movieOptions = {
@@ -61,7 +61,7 @@ async function getMovies()
       const movieInfo = await getMoviesInfo(movie);
       const moviePeople = await getMoviesPeople(movie);
       const movieTrailer = await getMoviesTrailer(movie);
-      const moviePictures = awaitgetMoviesPictures(movie);
+      const moviePictures = await getMoviesPictures(movie);
       Object.assign(movie, movieInfo, moviePeople, movieTrailer, moviePictures);
     }
 
@@ -72,17 +72,35 @@ async function getMovies()
     // const movieInfo = await getMoviesInfo(movies[0]);
     // const moviePeople = await getMoviesPeople(movies[0]);
     // const movieTrailer = await getMoviesTrailer(movies[0]);
-    // Object.assign(movies[0], movieInfo, moviePeople, movieTrailer);
+    // const moviePictures = await getMoviesPictures(movies[0]);
+    // Object.assign(movies[0], movieInfo, moviePeople, movieTrailer, moviePictures);
 
     // console.log(movies[0])
-    // console.log(movies[0].moreInfo.cast)
+    // console.log(movies[0].people.cast)
+
+    // const movieInfo1 = await getMoviesInfo(movies[1]);
+    // const moviePeople1 = await getMoviesPeople(movies[1]);
+    // const movieTrailer1 = await getMoviesTrailer(movies[1]);
+    // const moviePictures1 = await getMoviesPictures(movies[1]);
+    // Object.assign(movies[1], movieInfo1, moviePeople1, movieTrailer1, moviePictures1);
+
+    // console.log(movies[1])
+
+    // const movieInfo2 = await getMoviesInfo(movies[2]);
+    // const moviePeople2 = await getMoviesPeople(movies[2]);
+    // const movieTrailer2 = await getMoviesTrailer(movies[2]);
+    // const moviePictures2 = await getMoviesPictures(movies[2]);
+    // Object.assign(movies[2], movieInfo2, moviePeople2, movieTrailer2, moviePictures2);
+
+    // console.log(movies[2])
+    // console.log(movies.splice(0,3))
 
 
-    await Movie.insertMany(movies)
-    console.log("Movies stored in MongoDB")
+    // await Movie.insertMany(movies)
+    // console.log("Movies stored in MongoDB")
 
     // Add movies to the database if they do not exist
-    // await addNewMovies(movies); // (1)
+    await addNewMovies(movies); // (1)
 
 
 
@@ -90,6 +108,40 @@ async function getMovies()
     console.error('Error:', error);
   }
 
+}
+
+// Function that will allow only new movies to be added to the database, rather tha having all movies removed then repopulated
+async function addNewMovies(movies)
+{
+  try {
+
+    // Find all existing movies in the database. Include only the tmdbId and title of each movie currently in database
+    const allMovies = await Movie.find({}, { tmdbId: 1, title: 1 });
+    // console.log("Movies in Database")
+    // console.log(allMovies)
+
+    // Extract the tmdbIds from movies already in the database 
+    const allMovieIds = allMovies.map(existingMovies => existingMovies.tmdbId);
+    // console.log("EXISTING TMDB IDS")
+    // console.log(allMovieIds)
+
+    // Filter movies to only include those not in the database
+    const moviesToAdd =   movies.filter(movie => !allMovieIds.includes(movie.tmdbId.toString()));
+
+    // // Add the new movies to the database
+    if (moviesToAdd.length > 0) 
+    {
+      await Movie.insertMany(moviesToAdd);
+      console.log(`${moviesToAdd.length} movies added to the database.`);
+    } 
+    else 
+    {
+      console.log('No new movies to add.');
+    }
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
 
@@ -109,7 +161,7 @@ async function getMoviesInfo(movie)
     const response = await axios.request(movieInfoOptions);
     // console.log(response.data);
     let movieData = response.data
-    const genres = movieData.genres.map(genre => genre.name);
+    // const genres = movieData.genres.map(genre => genre.name);
     const baseImageURL = "https://image.tmdb.org/t/p/original"
     
     // Setting up release date
@@ -117,8 +169,9 @@ async function getMoviesInfo(movie)
     let releaseYear = -1
     if(movieData.release_date)
     {
-      releaseDate = movieData.release_date.toLocaleDateString();
-      releaseYear = date.getFullYear()
+      release = new Date(movieData.release_date);
+      releaseDate = release.toLocaleDateString();
+      releaseYear = release.getFullYear()
     }
 
     
@@ -129,12 +182,24 @@ async function getMoviesInfo(movie)
       releaseDate: releaseDate,
       releaseYear: releaseYear,
       status: movieData.status,
-      genres: genres,
+      genres: [],
       poster: baseImageURL + movieData.poster_path,
       backdrop: baseImageURL + movieData.backdrop_path,
       originalLanguage: movieData.original_language,
+      runtime: movieData.runtime,
       adult: movieData.adult,
+      budget: movieData.budget,
+      revenue: movieData.revenue
     }
+
+    movieData.genres.forEach(genre => {
+      movieInfo.genres.push({genreId: genre.id, genre: genre.name});
+    });
+
+    // {
+    //   genreId: movieData.genres.id,
+    //   genre: movieData.genres.name
+    // }
 
     return movieInfo
     
@@ -142,7 +207,6 @@ async function getMoviesInfo(movie)
     console.error(error);
   }
 }
-
 
 async function getMoviesPeople(movie) 
 {
@@ -165,7 +229,7 @@ async function getMoviesPeople(movie)
     const baseImageURL = "https://image.tmdb.org/t/p/original"
     
     const moviePeople = {
-      moreInfo: 
+      people: 
       {
         director: [],
         screenplay: [],
@@ -177,7 +241,7 @@ async function getMoviesPeople(movie)
     const directors = crew.filter(person => person.department === "Directing");
     // Add directors to moviePeople
     directors.forEach(director => {
-      moviePeople.moreInfo.director.push({
+      moviePeople.people.director.push({
         directorId: director.id,
         directorName: director.name,
         directorPicture: baseImageURL + director.profile_path, // Add picture URL if available
@@ -188,7 +252,7 @@ async function getMoviesPeople(movie)
     const screenwriters = crew.filter(person => person.department === "Writing");
     // Add screenwriters to moviePeople
     screenwriters.forEach(screenwriter => {
-      moviePeople.moreInfo.screenplay.push({
+      moviePeople.people.screenplay.push({
         screenplayId: screenwriter.id,
         screenplayName: screenwriter.name,
         screenplayPicture: baseImageURL + screenwriter.profile_path, // Add picture URL if available
@@ -196,10 +260,10 @@ async function getMoviesPeople(movie)
       });
     });
 
-    const actors = cast.filter(actor => actor.order <= 10 && actor.known_for_department === "Acting");
+    const actors = cast.filter(actor => actor.order <= 20 && actor.known_for_department === "Acting");
     // Add filtered actors to moviePeople
     actors.forEach(actor => {
-      moviePeople.moreInfo.cast.push({
+      moviePeople.people.cast.push({
         actorId: actor.id,
         actorName: actor.name,
         actorPicture: baseImageURL + actor.profile_path, // Add picture URL if available
@@ -215,7 +279,6 @@ async function getMoviesPeople(movie)
     console.error(error);
   }
 }
-
 
 // Have to find out how to determine which trailer for those with multiple
 async function getMoviesTrailer(movie) 
@@ -290,7 +353,7 @@ async function getMoviesPictures(movie)
   try {
     const response = await axios.request(moviePictureOptions);
     // console.log(response.data);
-    let movieData = response.data.results
+    let movieData = response.data
     const baseImageURL = "https://image.tmdb.org/t/p/original"
 
     const resp = {
@@ -300,19 +363,19 @@ async function getMoviesPictures(movie)
     }
 
 
-    
+    // console.log(movieData.backdrops)
     const postersResponse = movieData.posters;
-    const backdropsResponse = movieData.backdrops
-    const logosResponse = movieData.logos
+    const backdropsResponse = movieData.backdrops;
+    const logosResponse = movieData.logos;
 
     postersResponse.forEach(poster => {
-      resp.posters.push(poster);
+      resp.posters.push(baseImageURL + poster.file_path);
     });
     backdropsResponse.forEach(backdrop => {
-      resp.backdrops.push(backdrop);
+      resp.backdrops.push(baseImageURL + backdrop.file_path);
     });
     logosResponse.forEach(logo => {
-      resp.logos.push(logo);
+      resp.logos.push(baseImageURL + logo.file_path);
     });
 
 
@@ -325,48 +388,9 @@ async function getMoviesPictures(movie)
 }
 
 
-// Function that will allow only new movies to be added to the database, rather tha having all movies removed then repopulated
-// async function addNewMovies(movie)
-// {
-//   try {
 
-//     // Find all existing tmdbIds in the database
-//     const existingMovies = await Movie.find({}, { tmdbId: 1 });
-
-//     // Extract tmdbIds from existingMovies
-//     const existingTmdbIds = existingMovies.map(movie => movie.tmdbId);
-
-//     // Filter movies to only include those not in the database
-//     const moviesToAdd = movies.filter(movie => !existingTmdbIds.includes(movie.tmdbId));
-
-//     // Add movies to the database
-//     if (moviesToAdd.length > 0) 
-//     {
-//       await Movie.insertMany(moviesToAdd);
-//       console.log(`${moviesToAdd.length} movies added to the database.`);
-//     } 
-//     else 
-//     {
-//       console.log('No new movies to add.');
-//     }
-
-//   } catch (error) {
-//     console.error('Error:', error);
-//   }
-// }
 
 
 
 getMovies()
 
-
-
-      // averageRating: { type: Number, required: false, default: null },
-
-      // reviews: 
-      // [{ 
-      //   rating: { type: String, required: true },
-      //   author: { type: String, required: false },
-      //   review: { type: String, required: false },
-      //   reviewId: { type: String, required: true },
-      // }],

@@ -10,15 +10,20 @@ const movieSchema = new Schema({
     releaseDate: { type: String, required: true, default: null},
     releaseYear: {type: Number, required: true, default:-1},
     status: { type: String, required: true },
-    genres: { type: [String], required: true },
+    genres: [{ 
+      genreId: { type: Number, required: true },
+      genre: { type: String, required: true }
+    }],
     poster: { type: String, required: true },
     backdrop: { type: String, required: true },
     posters: [{ type: String, required: true }],
     backdrops: [{ type: String, required: true }],
     logos: [{ type: String, required: true }],
-    originalLanguage: { type: String, required: false },
-    runtime: {type: Number, required: true, default: -1},
-    adult: { type: Boolean, required: false, default: false },    
+    originalLanguage: { type: String, required: false, default: ""},
+    runtime: { type: Number, required: false, default: -1},
+    adult: { type: Boolean, required: false, default: false },  
+    budget: {type: Number, required: false, default: -1},
+    revenue: {type: Number, required: false, default: -1},  
     trailerLink: 
     [{ 
       site: {type: String, required: true },
@@ -37,7 +42,7 @@ const movieSchema = new Schema({
     }],
     ratings: {type: [Number], required: true},
     averageRating: { type: Number, required: true, default: -1 },
-    moreInfo: 
+    people: 
     {
       director: [{
         directorId: { type: String, required: true },
@@ -58,16 +63,7 @@ const movieSchema = new Schema({
         role: { type: [String] }
       }]
     },
-    reviews: 
-    [{ 
-      rating: { type: Number, required: true },
-      author: { type: String, required: true, default: "Anonymous" },
-      review: {
-        heading: {type: String, default: ""},
-        content: {type: String, default: ""}
-      },
-      reviewId: { type: String, required: true },
-    }],
+    reviews: [ {type: Schema.Types.ObjectId, ref: "Review"} ],
     
 
 });
