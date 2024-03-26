@@ -2,6 +2,21 @@
 
 }
 
+.error-div{
+
+}
+
+#error {
+    color: black;
+    background-color: rgba(255, 0, 0, 0.9);
+    font-weight: bold;
+    position: fixed;
+    top: 10vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999; /* Ensure it's above other elements */
+}
+
 .movie-info-container-bg {
     background-repeat: no-repeat;
     width: 100%;
@@ -186,13 +201,47 @@
 
 }
 
-.create-review-container {
+.login {
+    opacity: 0;
+    z-index: 0;
+    display: none;
+}
 
+.login.active {
+    opacity: 1;
+    z-index: 5;
+    display: inline;
+    margin: 40px 10px;
+}
+
+.create-review-container {
+    /* padding-left: 20px */
+    margin-bottom: 100px;
 }
 
 .create-review {
-
+    opacity: 0;
+    z-index: 0;
+    display: none;
 }
+
+.create-review.active {
+    opacity: 1;
+    z-index: 10;
+    display: inline;
+}
+
+/* .create-review .login {
+    opacity: 1;
+    z-index: 5;
+}
+
+.create-review.active .login{
+    opacity: 0;
+    z-index: 0;
+    color: red;
+
+} */
 
 .create-rating {
 

@@ -6,16 +6,32 @@ import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faBookmark, faHeart, faVideo } from "@fortawesome/free-solid-svg-icons";
-import { Button, FloatingLabel, Form, InputGroup, } from 'react-bootstrap';
+import { Alert, Button, FloatingLabel, Form, InputGroup, } from 'react-bootstrap';
 
 
 const Movie = () => {
 
+    const jwtToken = localStorage.getItem('jwtToken');
+
     const { movieId } = useParams(); // Get the id parameter from the URL     
     const [movie, setMovie] = useState(null);
-    const [userRating, setRating] = useState(-1)
+
+    const [reviewActive, setReviewActive] = useState(true);
+
+    const [author, setAuthor] = useState('Anonymous');
+    const [rating, setRating] = useState('-1');
+    const [heading, setHeading] = useState('');
+    const [content, setContent] = useState('');
+    const [anonymous, setAnonymous] = useState(true);
+
+    const [error, setError] = useState(null);
+    const [haveError, setHaveError] = useState(false)
 
     const getMovie = async () =>{
+        if(jwtToken)
+        {
+            setReviewActive(true)
+        }
         try {
 
             const response = await api.get(`/api/v1/movies/${movieId}`);
@@ -26,17 +42,81 @@ const Movie = () => {
             console.log(error);
         } 
     } 
-    useEffect(() => {
+    useEffect(() => { 
         getMovie();
       }, [])
 
+      
     if (!movie) {
         return (<div>Loading...</div>);
     }
 
+// console.log(reviewActive)
+
+    const sendReview = async (e) => {
+        e.preventDefault();
+        try {
+            if(anonymous)
+            {
+                setAuthor("Anonymous")
+            }
+            else
+            {
+
+            }
+            if(rating > 5 || rating <=0)
+            {
+                setError("Movie rating must be between 0.5 and 5");
+                setHaveError(true);
+            }
+            console.log(author)
+            console.log(rating)
+            console.log(heading)
+            console.log(content)
+            console.log(movie.tmdbId)
+            const response = await api.post(`http://localhost:5000/api/v1/movies/reviews/addReview/${movie.tmdbId}`, {
+                author: author,
+                rating: rating,
+                heading: heading,
+                content: content
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-auth-token': jwtToken // Include your JWT token here
+                }
+            });
+            console.log(response.data);
+            // Handle successful login (e.g., store token in localStorage)
+    
+            if(response.data.token)
+            {
+                //const data = await response.json();
+                localStorage.setItem('jwtToken', response.data.token); // Store the JWT token in local storage
+        
+                navigate('/', { replace: true }); // Navigate to the home page
+                //window.location.href = '/' // Another way to go to home page
+            }
+    
+            } catch (error) {
+                setError(error.response.data.message);
+                setHaveError(true);
+                console.error('Login error:', error);
+                // Handle login error (e.g., display error message)
+        }
+      };
+
+          // Function to handle click event on the document
+    const handleClick = () => {
+        // Remove the error message
+        setError('');
+        setHaveError(false);
+    };
+    // Function to remove the error message after a delay
+
 
   return (
-    <div className={styles['movie-container']}>
+    <div className={styles['movie-container']} onClick={haveError ? handleClick : null}>
+        <div className={styles["error-div"]}> {error && <Alert id={styles["error"]}>{error}</Alert>} </div>
         <div className={styles["movie-info-container-bg"]} style={{"backgroundImage": `url(${movie.backdrop})`}}>
             <div className={styles['movie-info-container']} >
                 <div className={styles['movie-poster-container']}>
@@ -127,14 +207,18 @@ const Movie = () => {
                     </section>
                     <section className={styles['create-review-container']}> <br/>
                     <h2>Create Review</h2>
-                        <div className={styles['create-review hide']}><br/>
-                            
+                        <div className={`${styles["login"]} ${!reviewActive ? styles.active : ''}`} > 
+                            <h5><Link to={`/login`} style={{"textDecoration": "none", "color": "inherit"}} title="Go to login page">*You must be logged in to make a review*</Link></h5> 
+                        </div>
+                        <div className={`${styles["create-review"]} ${reviewActive ? styles.active : ''}`} ><br/>
+                            <Form onSubmit={sendReview}>
                             <div className={styles['create-review-user']}>
                                 {/* <input type="text" placeholder="Your name" /> */}
-                                <InputGroup style={{ width: '500px' }}>
+                                {/* <InputGroup style={{ width: '500px' }}>
                                     <InputGroup.Checkbox />
-                                    <Form.Control type="text" placeholder="User Name" /*disabled*/ readOnly />
-                                </InputGroup> <br/>
+                                    {/* <Form.Control type="text" placeholder={`${movie}`} /*disabled readOnly /> }
+                                </InputGroup> <br/> */}
+                                <Form.Check label={`Anonymous`} onChange={(e, newValue) => { setAnonymous(!anonymous); }}/>
                             </div>
                             <div className={styles['create-rating']}>
                                 <Rating 
@@ -142,25 +226,25 @@ const Movie = () => {
                                 defaultValue={4.5} 
                                 precision={0.5}
                                 size="large"
-                                onChange={(event, newValue) => {
-                                    setRating(newValue);
-                                }}  
+                                onChange={(e, newValue) => { setRating(newValue); }}  
                                 /> <br/>
                             </div>
                             <div className={styles['create-review-content-container']}>
                                 <div className={styles['create-review-heading']}>
                                     {/* <input type="text" placeholder="" /> */}
-                                    <Form.Control type="text" placeholder="Review headline" style={{ width: '500px' }} /> <br/>
+                                    <Form.Control type="text" placeholder="Review headline" style={{ width: '500px' }} value={heading} onChange={(e) => setHeading(e.target.value)}/> <br/>
                                 </div>
                                 <div className={styles['create-review-content']}>
                                     {/* <textarea placeholder="Write your review..." /> */}
                                     <FloatingLabel
                                     controlId="floatingTextarea"
                                     label="Write your review...">
-                                        <Form.Control as="textarea" label="Write your review..." style={{ height: '100px', width: '500px' }} />
+                                        <Form.Control as="textarea" label="Write your review..." style={{ height: '100px', width: '500px' }} value={content} onChange={(e) => setContent(e.target.value)}/>
                                     </FloatingLabel>
                                 </div>
                             </div>
+                            <Button className={styles['submit-review-button']} type="submit">Submit Review</Button>
+                            </Form>
                         </div>
                     </section>
                 </section>
