@@ -24,8 +24,6 @@ function App() {
 
       const response = await api.get("/api/v1/movies");
 
-      // console.log(response.data)
-
       setMovies(response.data)
 
     } catch (error) {
@@ -54,7 +52,7 @@ function App() {
           <Route path="/movies" element={ <Movies movies={movies} /> } />
           <Route path="/movies/genre/:genre" element={ <MoviesGenre/> } />
           <Route path="/movie/:movieId" element={ <Movie/> } />
-          <Route path="/movies/:movieId/reviews" element={ <Reviews/> } />
+          <Route path="/movie/:movieId/reviews" element={ <Reviews/> } />
           <Route path="/Trailer/:trailerKey" element={ <Trailer/> } />
           <Route path="*" element={ <NotFound/> } />
         </Route>

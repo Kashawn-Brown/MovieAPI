@@ -31,7 +31,6 @@ const Login = () => {
             {
                 //const data = await response.json();
                 localStorage.setItem('jwtToken', response.data.token); // Store the JWT token in local storage
-                localStorage.setItem('userEmail', loginEmail);
         
                 navigate('/', { replace: true }); // Navigate to the home page
                 //window.location.href = '/' // Another way to go to home page
@@ -70,7 +69,6 @@ const Login = () => {
             {
                 //const data = await response.json();
                 localStorage.setItem('jwtToken', response.data.token); // Store the JWT token in local storage
-                localStorage.setItem('userEmail', registerEmail);
         
                 navigate('/', { replace: true }); // Navigate to the home page
                 //window.location.href = '/' // Another way to go to home page

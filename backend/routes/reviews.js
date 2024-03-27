@@ -100,7 +100,7 @@ router.post('/addReview/:id', authenticateToken, async (req, res) => {
         await movie.save();
         await user.save();
 
-        res.status(200).json({message: "Your review has been saved"});
+        res.status(201).json({message: "Your review has been created and saved"});
         
 
     }catch (error) {

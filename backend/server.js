@@ -19,6 +19,7 @@ app.use('/api/v1/movies', require('./routes/movies'));
 app.use('/api/v1/movies/reviews', require('./routes/reviews'));
 app.use('/api/v1/authorization', require('./routes/authorization'));
 app.use('/api/v1/list', require('./routes/lists'));
+app.use('/api/v1/user', require('./routes/user'));
 
 
 //Port is initialized with the value of the environment if set, or 5000

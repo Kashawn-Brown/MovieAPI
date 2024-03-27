@@ -9,7 +9,7 @@ const MoviesGenre = () => {
     var allGenres = location.state?.allGenres;
     
     const  currentGenre  = useParams().genre;
-    console.log(currentGenre)
+    // console.log(currentGenre)
 
     const navigate = useNavigate();
 
