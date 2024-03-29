@@ -1,13 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVideoSlash } from "@fortawesome/free-solid-svg-icons";
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container"
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
+import {Button, Container, Nav, Navbar} from "react-bootstrap"
 import {NavLink} from "react-router-dom";
 
-const Header = () => {
+const Header = ({ isAuthenticated, onLogout }) => {
 
+    console.log(isAuthenticated);
 
   return (
 
@@ -29,8 +27,16 @@ const Header = () => {
                     <NavLink className ="nav-link" to="/tv">TV Shows</NavLink>
                     <NavLink className ="nav-link" to="/watchList">Watch List</NavLink>      
                 </Nav>
-                <Button href="/login" variant="outline-info" className="me-2">Login</Button>
-                <Button href="/login" variant="outline-info">Register</Button>
+                {/* <Button href="/login" variant="outline-info" className="me-2">Login</Button>
+                <Button href="/login" variant="outline-info">Register</Button> */}
+                {isAuthenticated ? (
+                    <Button href="/login" onClick={onLogout} variant="outline-info">Logout</Button>
+                    ) : (
+                    <>
+                        <Button href="/login" variant="outline-info" className="me-2">Login</Button>
+                        <Button href="/login" variant="outline-info">Register</Button>
+                    </>
+                )}
             </Navbar.Collapse>
         </Container>
 

@@ -13,40 +13,38 @@ const Home = ({movies}) => {
   return (
     <div>
       <div className={styles['movie-carousel-container']}>
-  <Carousel>
-    {
-      movies/*?.slice(8,9)*/?.map((movie) => {
-        return(
-          <Paper key={movie.tmdbId}>
-            <div className={styles['movie-card-container']}>
-              <div className={styles['movie-card']} style={{ "--img": `url(${movie.backdrop})` }}>
-                <div className={styles['movie-detail']}>
-                  <div className={styles['movie-poster']}>
-                    <Link to={`/movie/${movie.tmdbId}`}><img src={movie.poster} alt="" /> </Link>
-                  </div>
-                  <div className={styles['movie-title']}>
-                    <h4> {movie.title} </h4>
-                    <div className={styles['movie-buttons-container']}>
-                      <Link to={`/Trailer/${movie.trailerLink[0].key}`}>
-                        <div className={styles['play-button-icon-container']}>
-                          <FontAwesomeIcon className={styles['play-button-icon']} icon={faCirclePlay} />
+        <Carousel>
+          {
+            // movies?.sort(() => Math.random() - 0.5)
+            movies?.slice()?.sort(() => Math.random() - 0.5)?.slice(0,10)?.map((movie) => {
+              return(
+                <Paper key={movie.tmdbId}>
+                  <div className={styles['movie-card-container']}>
+                    <div className={styles['movie-card']} style={{ "--img": `url(${movie.backdrop})` }}>
+                      <div className={styles['movie-detail']}>
+                        <div className={styles['movie-poster']}>
+                          <Link to={`/movie/${movie.tmdbId}`}><img src={movie.poster} alt="" /> </Link>
                         </div>
-                      </Link>
+                        <div className={styles['movie-title']}>
+                          <h4> {movie.title} </h4>
+                          <div className={styles['movie-buttons-container']}>
+                            <Link to={`/Trailer/${movie.trailerLink[0].key}`}>
+                              <div className={styles['play-button-icon-container']}>
+                                <FontAwesomeIcon className={styles['play-button-icon']} icon={faCirclePlay} />
+                              </div>
+                            </Link>
+                          </div>
+                        </div>
+                        <div className={styles['blank']}>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className={styles['blank']}>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Paper>
-        )
-      })
-    }
-  </Carousel>
-</div>
-      <div className={styles["movies-list"]}>
-        Featured Movies here
+                </Paper>
+              )
+            })
+          }
+        </Carousel>
       </div>
     </div>
   )

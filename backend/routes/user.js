@@ -44,7 +44,7 @@ router.get('/getUserValid/', authenticateToken, async (req, res) => {
 
 })
 
-// Get User watchlist
+// Get a Users Review for a movie
 router.get('/getUserReview/:movieId', authenticateToken, async (req, res) => {
 
     try {
@@ -61,6 +61,80 @@ router.get('/getUserReview/:movieId', authenticateToken, async (req, res) => {
         
         return res.status(200).json(review)
 
+    }catch (error) {
+        console.error(error);
+    }
+
+})
+
+// Get if a movie is in a Users Watchlist or not
+router.get('/inWatched/:movieId', authenticateToken, async (req, res) => {
+
+    try {
+
+        const userId = req.user.userId;
+        const movieId = req.params.movieId
+
+        const user = await User.findOne({ _id: userId });
+
+        const existing = user.watched.some(movieInfo => movieInfo.movieId === movieId);
+
+        if(existing)
+        {
+            return res.status(200).json(true)
+        }
+
+        return res.status(200).json(false)
+        
+    }catch (error) {
+        console.error(error);
+    }
+
+})
+
+// Get if a movie is in a Users Watchlist or not
+router.get('/inWatchlist/:movieId', authenticateToken, async (req, res) => {
+
+    try {
+
+        const userId = req.user.userId;
+        const movieId = req.params.movieId
+
+        const user = await User.findOne({ _id: userId });
+
+        const existing = user.watchlist.some(movieInfo => movieInfo.movieId === movieId);
+
+        if(existing)
+        {
+            return res.status(200).json(true)
+        }
+
+        return res.status(200).json(false)
+        
+    }catch (error) {
+        console.error(error);
+    }
+
+})
+
+router.get('/inFavourites/:movieId', authenticateToken, async (req, res) => {
+
+    try {
+
+        const userId = req.user.userId;
+        const movieId = req.params.movieId
+
+        const user = await User.findOne({ _id: userId });
+
+        const existing = user.favourites.some(movieInfo => movieInfo.movieId === movieId);
+
+        if(existing)
+        {
+            return res.status(200).json(true)
+        }
+
+        return res.status(200).json(false)
+        
     }catch (error) {
         console.error(error);
     }
