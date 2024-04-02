@@ -197,7 +197,7 @@ router.delete('/removeFromWatched/:id', authenticateToken, async (req, res) => {
 
         // const existing = user.watched.find(item => item.movieId === movieId);
         const existingIndex = user.watched.findIndex(movieInfo => movieInfo.movieId === movieId);
-        console.log(existingIndex)
+        // console.log(existingIndex)
 
         if (existingIndex === -1) 
         {

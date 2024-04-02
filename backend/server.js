@@ -13,7 +13,6 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json()); //or can apparently use express.json() ~ bodyparser.json vs express.json
 
-
 //Setting up routes for different parts of applictaion
 app.use('/api/v1/movies', require('./routes/movies'));
 app.use('/api/v1/movies/reviews', require('./routes/reviews'));
@@ -47,4 +46,12 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {
     console.log('Connected to MongoDB');
+});
+
+
+// // Making Build Folder as Public 
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
