@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
 const cors = require('cors');
-const path = require("path");
+// const path = require("path");
 
 // Getting access to .env file
 require('dotenv').config({ path: '../.env' });
@@ -51,8 +51,8 @@ db.once('open', () => {
 
 
 // // Making Build Folder as Public 
-app.use(express.static(path.join(__dirname, 'build')));
+// app.use(express.static(path.join(__dirname, 'build')));
 
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+// app.get('/', function(req, res) {
+//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+// });
