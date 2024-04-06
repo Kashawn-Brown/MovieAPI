@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
 const cors = require('cors');
-// const path = require("path");
+const path = require("path");
 
 // Getting access to .env file
 require('dotenv').config({ path: '../.env' });
@@ -20,6 +20,13 @@ app.use('/api/v1/movies/reviews', require('./routes/reviews'));
 app.use('/api/v1/authorization', require('./routes/authorization'));
 app.use('/api/v1/list', require('./routes/lists'));
 app.use('/api/v1/user', require('./routes/user'));
+
+
+app.use(express.static(path.join(__dirname, 'frontend/build')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+});
+
 
 
 //Port is initialized with the value of the environment if set, or 5000
@@ -49,10 +56,3 @@ db.once('open', () => {
     console.log('Connected to MongoDB');
 });
 
-
-// // Making Build Folder as Public 
-// app.use(express.static(path.join(__dirname, 'build')));
-
-// app.get('/', function(req, res) {
-//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
-// });
