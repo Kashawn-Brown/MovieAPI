@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation, useParams  } from 'react-router-dom';
 import styles from '../styles/Movies.module.css';
+import api from '../api/axiosConfig'
 
 const MoviesGenre = () => {
     // console.log(movies)
@@ -18,8 +19,8 @@ const MoviesGenre = () => {
 
 const handleGenreClick = async (genre) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/v1/movies/genre/${genre.genre}`);
-      const data = await response.json();
+      const response = await api.get(`api/v1/movies/genre/${genre.genre}`);
+      const data = response.data;
     //   console.log(data)
       navigate(`/movies/genre/${genre.genre}`, { state: { movies: data, allGenres }, replace: true });
     } catch (error) {
