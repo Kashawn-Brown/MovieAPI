@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 
@@ -89,4 +89,4 @@ movieSchema.pre('save', function(next)
 
 const Movie = mongoose.model('Movie', movieSchema);
 
-module.exports = Movie;
+export default Movie;

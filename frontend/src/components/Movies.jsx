@@ -18,7 +18,7 @@ const Movies = ({movies}) => {
                 genres.push({ genreId: genre.genreId, genre: genre.genre });
             }
         });
-        return genres;
+        return genres.sort((a, b) => a.genre.localeCompare(b.genre));;
     }, []);
 
 // console.log(allGenres)
@@ -27,7 +27,7 @@ const Movies = ({movies}) => {
   const handleGenreClick = async (genre) => {
     try {
       // console.log(genre.genre)
-      const response = await api.get(`api/v1/movies/genre/${genre.genre}`);
+      const response = await api.get(`/movies/genre/${genre.genre}`);
       const data = response.data;
       // console.log(data)
       navigate(`/movies/genre/${genre.genre}`, { state: { movies: data, allGenres }, replace: true });

@@ -19,7 +19,7 @@ const MoviesGenre = () => {
 
 const handleGenreClick = async (genre) => {
     try {
-      const response = await api.get(`api/v1/movies/genre/${genre.genre}`);
+      const response = await api.get(`/movies/genre/${genre.genre}`);
       const data = response.data;
     //   console.log(data)
       navigate(`/movies/genre/${genre.genre}`, { state: { movies: data, allGenres }, replace: true });
@@ -31,7 +31,7 @@ const handleGenreClick = async (genre) => {
   return (
     <div className={styles['movies-container']}>
       <div className={styles['genre-panel']}>
-        <h2>Genres</h2>
+        <h2> <Link to={`/movies`} style={{ textDecoration: 'none', color: 'inherit' }}>Genres </Link> </h2>
         <ul>
           {allGenres?.map((genre) => (
             <li key={genre.genreId} onClick={() => handleGenreClick(genre)} style={{ fontWeight: genre.genre === currentGenre ? 'bold' : 'normal' }}>

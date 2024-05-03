@@ -17,23 +17,27 @@ const Movie = () => {
     const defaultPic = "https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-4-user-grey-d8fe957375e70239d6abdd549fd7568c89281b2179b5f4470e2e12895792dfa5.svg";
     const navigate = useNavigate();
 
-    const jwtToken = localStorage.getItem('jwtToken');
+    // const jwtToken = localStorage.getItem('jwtToken');
+    // const user2 = JSON.parse(localStorage.getItem('User'));
+    //Getting user info from local storage; should just be able to pull all the info rather than having to request it from backend again
 
     const { movieId } = useParams(); // Get the id parameter from the URL     
     const [movie, setMovie] = useState(null);
-    const [reviews, setReviews] = useState([]);
+    // const [reviews, setReviews] = useState([]);
     const [userActive, setUserActive] = useState(false)
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('User')))
+    const jwtToken = user?.token
     const [hasReview , setHasReview] = useState(false)
     const [userReview, setUserReview] = useState(null)
 
     const [author, setAuthor] = useState('');
-    const [rating, setRating] = useState('-1');
+    const [rating, setRating] = useState(-1);
     const [heading, setHeading] = useState('');
     const [content, setContent] = useState('');
     const [anonymous, setAnonymous] = useState(false);
 
     const [error, setError] = useState(null);
+    const [message, setMessage] = useState(null);
     const [haveError, setHaveError] = useState(false)
 
     const [inWatched, setInWatched] = useState(false)
@@ -45,9 +49,9 @@ const Movie = () => {
         //Get movie information
         try {
 
-            const response = await api.get(`/api/v1/movies/${movieId}`, { cancelToken: source.token });
-            setMovie(response.data)
-            // console.log(response.data)
+            const response9 = await api.get(`/movies/${movieId}`, { cancelToken: source.token });
+            setMovie(response9.data)
+            console.log(response9.data)
 
         } catch (error) {
             if (axios.isCancel(error)) 
@@ -60,58 +64,107 @@ const Movie = () => {
             }
         } 
     } 
-    const getReviews = async (source) => {
+    // const getReviews = async (source) => {
 
-        // Get all reviews for the movie
-        try {
+    //     // Get all reviews for the movie
+    //     try {
 
-            const response2 = await api.get(`/api/v1/movies/reviews/getReviews/${movieId}`, { cancelToken: source.token });
-            setReviews(response2.data)
-            // console.log(response2.data)
+    //         const response2 = await api.get(`/movies/reviews/getReviews/${movieId}`, { cancelToken: source.token });
+    //         setReviews(response2.data)
+    //         // console.log(response2.data)
 
-        } catch (error) {
-            if (axios.isCancel(error)) 
-            {
-                console.log('Request to get movie canceled', error.message);
-            } 
-            else 
-            {
-                console.error(error.response.data.message);
-            }
-        } 
+    //     } catch (error) {
+    //         if (axios.isCancel(error)) 
+    //         {
+    //             console.log('Request to get movie canceled', error.message);
+    //         } 
+    //         else 
+    //         {
+    //             console.error(error.response.data.message);
+    //         }
+    //     } 
 
-    }
+    // }
     const getUser = async (source) => {
+        const jwtToken = user?.token
 
         try {
             
-            const response4 = await api.get(`api/v1/user/getUser`, {
+            // const response4 = await api.get(`/user/getUser`, {
                 
-                cancelToken: source.token,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-auth-token': jwtToken
-                }
-            });
+            //     cancelToken: source.token,
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'x-auth-token': jwtToken
+            //     }
+            // });
             setUserActive(true)
-            setUser(response4.data)
-            setAuthor(response4.data.userName)
+            // setUser(response4.data)
+            // setUser(localStorage.getItem('User'))
+            setAuthor(user.userDetails.userName)
+            // getUserReview(source);
+            // getUserLists(source)
             // console.log(author)
             // console.log(user)
 
+            // Check if movieId is in reviews
+            console.log(user.userDetails.reviews)
+            user.userDetails.reviews.forEach(review => {
+                // console.log(favourite.movieId)
+                if (review.movie.movieId === movieId) {
+                    setHasReview(true);
+                }
+            });
+
+            // Check if movieId is in watched
+            console.log(user.userDetails.watched)
+
+            user.userDetails.watched.forEach(watched => {
+                console.log(watched)
+                if (watched.movieId === movieId) {
+                    setInWatched(true);
+                }
+            });
+
+            // Check if movieId is in watchlist
+            console.log(user.userDetails.watchlist)
+            user.userDetails.watchlist.forEach(watchlist => {
+                if (watchlist.movieId === movieId) {
+                    setInWatchlist(true);
+                }
+            });
+
+            // Check if movieId is in favourites
+            console.log(user.userDetails.favourites)
+            user.userDetails.favourites.forEach(favourite => {
+                console.log(favourite);
+                if (favourite.movieId === movieId) {
+                    setInFavourites(true);
+                }
+            });
+
+            // console.log(movieId)
+            // console.log(typeof movieId)
+            // console.log(hasReview)
+            // console.log(inWatched)
+            // console.log(inWatchlist)
+            // console.log(inFavourites)
+
         }catch (error) {
+            console.log(error)
             if (axios.isCancel(error)) 
             {
                 console.log('Request to get movie canceled', error.message);
             } 
             else 
             {
-                if(error.response.data.message === "Invalid token.")
-                {
-                    // Token no longer authorized
-                    localStorage.removeItem('jwtToken');
-                }
-                console.error(error.response.data.message);
+                console.log(error)
+                // if(error.response.data.message === "Invalid token.")
+                // {
+                //     // Token no longer authorized
+                //     localStorage.removeItem('User');
+                // }
+                console.error(error);
             }
 
         }
@@ -121,7 +174,7 @@ const Movie = () => {
 
         try {
 
-            const response5 = await api.get(`api/v1/user/getUserReview/${movieId}`, {
+            const response5 = await api.get(`/user/getUserReview/${movieId}`, {
                 
                 cancelToken: source.token,
                 headers: {
@@ -147,69 +200,67 @@ const Movie = () => {
         } 
 
     }
-    const getUserLists = async (source) => {
+    // const getUserLists = async (source) => {
 
-        try {
+    //     try {
 
-            const response6 = await api.get(`api/v1/user/inWatched/${movieId}`, {
+    //         const response6 = await api.get(`/user/inWatched/${movieId}`, {
                 
-                cancelToken: source.token,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-auth-token': jwtToken
-                }
-            });
+    //             cancelToken: source.token,
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'x-auth-token': jwtToken
+    //             }
+    //         });
 
-            setInWatched(response6.data)
-            console.log(response6.data)
+    //         setInWatched(response6.data)
+    //         console.log(response6.data)
 
-            const response7 = await api.get(`api/v1/user/inWatchlist/${movieId}`, {
+    //         const response7 = await api.get(`/user/inWatchlist/${movieId}`, {
                 
-                cancelToken: source.token,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-auth-token': jwtToken
-                }
-            });
+    //             cancelToken: source.token,
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'x-auth-token': jwtToken
+    //             }
+    //         });
 
-            setInWatchlist(response7.data)
-            console.log(response7.data)
+    //         setInWatchlist(response7.data)
+    //         console.log(response7.data)
 
-            const response8 = await api.get(`api/v1/user/inFavourites/${movieId}`, {
+    //         const response8 = await api.get(`/user/inFavourites/${movieId}`, {
                 
-                cancelToken: source.token,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-auth-token': jwtToken
-                }
-            });
+    //             cancelToken: source.token,
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'x-auth-token': jwtToken
+    //             }
+    //         });
 
-            setInFavourites(response8.data)
-            console.log(response8.data)
+    //         setInFavourites(response8.data)
+    //         console.log(response8.data)
 
 
-        }catch (error) {
-            if (axios.isCancel(error)) 
-            {
-                console.log('Request to get movie canceled', error.message);
-            } 
-            else 
-            {
-                console.error(error.response.data.message);
-            }
-        } 
+    //     }catch (error) {
+    //         if (axios.isCancel(error)) 
+    //         {
+    //             console.log('Request to get movie canceled', error.message);
+    //         } 
+    //         else 
+    //         {
+    //             console.error(error.response.data.message);
+    //         }
+    //     } 
 
-    }
+    // }
     useEffect(() => { 
 
         // When component mounts or updates, cancel previous requests and create a new cancel token
         const source = axios.CancelToken.source();
 
         getMovie(source);
-        getUser(source);
-        getReviews(source);
-        getUserReview(source);
-        getUserLists(source)
+        // getReviews(source);
+        // if(user) getUser(source);
 
          // Cleanup function to cancel ongoing requests when the component unmounts
          return () => {
@@ -227,6 +278,7 @@ const Movie = () => {
     const sendReview = async (e) => {
         e.preventDefault();
         try {
+            console.log("sending")
             if(anonymous)
             {
                 setAuthor("Anonymous")
@@ -243,7 +295,8 @@ const Movie = () => {
                 // console.log(heading)
                 // console.log(content)
                 // console.log(movie.tmdbId)
-                const response = await api.post(`api/v1/movies/reviews/addReview/${movie.tmdbId}`, {
+                console.log("HI");
+                const response = await api.post(`/movies/reviews/addReview/${movie.tmdbId}`, {
                     author: author,
                     rating: rating,
                     heading: heading,
@@ -254,13 +307,13 @@ const Movie = () => {
                         'x-auth-token': jwtToken // Include your JWT token here
                     }
                 });
-                // console.log(response.data);
+                console.log(response.data);
                 
                 // const source = axios.CancelToken.source();
                 // getReviews(source);
+                console.log("sent")
                 navigate(0)
             }
-            
     
             } catch (error) {
                 setError(error.response.data.message);
@@ -273,7 +326,7 @@ const Movie = () => {
         e.preventDefault();
         try {
             
-            const response = await api.delete(`api/v1/movies/reviews/deleteReview/${movie.tmdbId}`,{
+            const response = await api.delete(`/movies/reviews/deleteReview/${movie.tmdbId}`,{
                 headers: {
                     'Content-Type': 'application/json',
                     'x-auth-token': jwtToken // Include your JWT token here
@@ -303,7 +356,7 @@ const Movie = () => {
 
             if(!inWatched)
             {
-                response = await api.post(`api/v1/list/addToWatched/${movie.tmdbId}`,{}, {
+                response = await api.post(`/list/addToWatched/${movie.tmdbId}`,{}, {
                     headers: {
                         'Content-Type': 'application/json',
                         'x-auth-token': jwtToken // Include your JWT token here
@@ -312,7 +365,7 @@ const Movie = () => {
             }
             else
             {
-                response = await api.delete(`api/v1/list/removeFromWatched/${movie.tmdbId}`, {
+                response = await api.delete(`/list/removeFromWatched/${movie.tmdbId}`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'x-auth-token': jwtToken // Include your JWT token here
@@ -339,7 +392,7 @@ const Movie = () => {
 
             if(!inWatchlist)
             {
-                response = await api.post(`api/v1/list/addToWatchlist/${movie.tmdbId}`,{}, {
+                response = await api.post(`/list/addToWatchlist/${movie.tmdbId}`,{}, {
                     headers: {
                         'Content-Type': 'application/json',
                         'x-auth-token': jwtToken // Include your JWT token here
@@ -348,7 +401,7 @@ const Movie = () => {
             }
             else
             {
-                response = await api.delete(`api/v1/list/removeFromWatchlist/${movie.tmdbId}`, {
+                response = await api.delete(`/list/removeFromWatchlist/${movie.tmdbId}`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'x-auth-token': jwtToken // Include your JWT token here
@@ -375,7 +428,7 @@ const Movie = () => {
 
             if(!inFavourites)
             {
-                response = await api.post(`api/v1/list/addToFavourites/${movie.tmdbId}`,{}, {
+                response = await api.post(`/list/addToFavourites/${movie.tmdbId}`,{}, {
                     headers: {
                         'Content-Type': 'application/json',
                         'x-auth-token': jwtToken // Include your JWT token here
@@ -384,7 +437,7 @@ const Movie = () => {
             }
             else
             {
-                response = await api.delete(`api/v1/list/removeFromFavourites/${movie.tmdbId}`, {
+                response = await api.delete(`/list/removeFromFavourites/${movie.tmdbId}`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'x-auth-token': jwtToken // Include your JWT token here
@@ -455,10 +508,10 @@ const Movie = () => {
                             </h4>
                         </div>
                         <div className={styles['movie-information-user-buttons']}>
-                            <Button onClick={() => toggleWatched()} id={styles["user-button"]} > <FontAwesomeIcon icon={faCircleCheck} className={styles["icon"]}/> </Button>
-                            <Button onClick={() => toggleWatchlist()} id={styles["user-button"]}> <FontAwesomeIcon icon={faBookmark}  className={styles["icon"]}/> </Button>
-                            <Button onClick={() => toggleFavourites()} id={styles["user-button"]}> <FontAwesomeIcon icon={faHeart}  className={styles["icon"]}/> </Button>
-                            <Button href={`/Trailer/${movie.trailerLink[0].key}`} id={styles["user-button"]}> <FontAwesomeIcon icon={faVideo}  className={styles["icon"]}/> </Button>
+                            <Button onClick={() => toggleWatched()} id={styles["user-button"]} title='Watched'> <FontAwesomeIcon icon={faCircleCheck} className={styles["icon"]}/> </Button>
+                            <Button onClick={() => toggleWatchlist()} id={styles["user-button"]} title='Watchlist'> <FontAwesomeIcon icon={faBookmark}  className={styles["icon"]}/> </Button>
+                            <Button onClick={() => toggleFavourites()} id={styles["user-button"]} title='Favourites'> <FontAwesomeIcon icon={faHeart}  className={styles["icon"]}/> </Button>
+                            <Button href={movie.trailerLink?.[0]?.key ? `/Trailer/${movie.trailerLink[0].key}` : '#'} id={styles["user-button"]} title='Trailer'> <FontAwesomeIcon icon={faVideo}  className={styles["icon"]}/> </Button>
                         </div>
                         <div className={styles['movie-overview']}>
                             <h3>Overview:</h3>
@@ -561,7 +614,7 @@ const Movie = () => {
                         
                         <div className={styles['movie-reviews']}>
                         <h3>Past Reviews and Ratings</h3>
-                        <Button className={styles['see-all-reviews-button']} onClick={() => navigate(`/movie/${movieId}/reviews`, { state: { reviews: reviews, movie: movie}})}>See All Reviews</Button>
+                        <Button className={styles['see-all-reviews-button']} onClick={() => navigate(`/movie/${movieId}/reviews`)}>See All Reviews</Button>
                         </div>
                     </section>
                     <section className={styles['create-review-container']}>

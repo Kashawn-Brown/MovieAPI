@@ -1,8 +1,8 @@
 //importing JSON Web Tokens (jwts) - for authentication and authorization
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 //Authentication Middleware
-function authenticateToken(req, res, next) 
+export function authenticateToken(req, res, next) 
 {
     const token = req.header('x-auth-token');
     if (!token) 
@@ -18,8 +18,3 @@ function authenticateToken(req, res, next)
       res.status(400).json({ message: 'Invalid token.' });
     }
 }
-
-
-
-
-module.exports = {authenticateToken} ;

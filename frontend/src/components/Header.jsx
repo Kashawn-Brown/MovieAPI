@@ -1,11 +1,83 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVideoSlash } from "@fortawesome/free-solid-svg-icons";
-import {Button, Container, Nav, Navbar} from "react-bootstrap"
-import {NavLink} from "react-router-dom";
+import {Button, Container, Nav, Navbar, Dropdown} from "react-bootstrap"
+import React, { useState, useEffect } from 'react';
+import {NavLink, useNavigate, useLocation} from "react-router-dom";
+import {jwtDecode} from 'jwt-decode';
 
-const Header = ({ isAuthenticated, onLogout }) => {
+const Header = () => {
 
-    console.log(isAuthenticated);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // console.log(isAuthenticated);
+    // const user = JSON.parse(localStorage.getItem('User'));
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('User')))
+    // const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    //Check if user token remains valid
+    useEffect(() => {
+        // console.log('Location changed:', location.pathname);
+        // console.log('User:', user);
+
+    // const source = axios.CancelToken.source();
+    //   // Your action here
+    //   // console.log('Location changed:', location.pathname);
+
+    //   const checkAuthentication = async () => {
+    //     // Logic to check if the user is authenticated
+    //     // This could be based on a valid token existence and validity
+    //     try {
+        setUser(JSON.parse(localStorage.getItem('User')))
+            const jwtToken = user?.token
+
+            // if (jwtToken) {
+            //     const response = await api.get(`user/getUserValid`, {
+            //       cancelToken: source.token, 
+            //       headers: {
+            //           'Content-Type': 'application/json',
+            //           'x-auth-token': jwtToken
+            //       }
+            //     });
+            //     setIsAuthenticated(response.data === true);
+            // }
+            // else{
+            //   localStorage.removeItem('User');
+            //   setIsAuthenticated(false);
+            // }
+
+            if(jwtToken) 
+            {
+                const decodedToken = jwtDecode(jwtToken);
+                // setIsAuthenticated(true)
+          
+                if (decodedToken.exp * 1000 < new Date().getTime()) logout();
+            }
+        // } catch (error) {
+        //     console.error('Error checking authentication:', error);
+        //     localStorage.removeItem('User');
+        //     setIsAuthenticated(false);
+        // }
+    // };
+    
+    // checkAuthentication();
+  }, [location]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('User');
+    setUser(null)
+    // setIsAuthenticated(false);
+    navigate(`/login`) // Or to login page
+    // Additional logout logic
+
+  };
+  const logout = () => {
+    localStorage.removeItem('User');
+    setUser(null)
+    // setIsAuthenticated(false);
+    // Additional logout logic
+
+  };
 
   return (
 
@@ -29,8 +101,20 @@ const Header = ({ isAuthenticated, onLogout }) => {
                 </Nav>
                 {/* <Button href="/login" variant="outline-info" className="me-2">Login</Button>
                 <Button href="/login" variant="outline-info">Register</Button> */}
-                {isAuthenticated ? (
-                    <Button href="/login" onClick={onLogout} variant="outline-info">Logout</Button>
+                {user ? (
+                    <>
+                        <Dropdown drop="start">
+                            <Dropdown.Toggle variant="outline-info" id="dropdown-basic" >
+                                Profile
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item href="#">My Account</Dropdown.Item>
+                                <Dropdown.Item as="button" onClick={handleLogout} > Logout </Dropdown.Item>
+                                {/* <Dropdown.Divider />
+                                <Dropdown.Item href="#">Something else here</Dropdown.Item> */}
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </>
                     ) : (
                     <>
                         <Button href="/login" variant="outline-info" className="me-2">Login</Button>

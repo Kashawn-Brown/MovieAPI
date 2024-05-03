@@ -104,7 +104,8 @@
     margin-top: -8px;
     color: rgba(255, 255, 255, 0.8);
     display: flex;
-    justify-content: center;
+    justify-content: left;
+    margin-left: 15px;
 }
 
 .dot {

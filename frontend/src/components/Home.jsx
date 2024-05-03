@@ -28,7 +28,7 @@ const Home = ({movies}) => {
                         <div className={styles['movie-title']}>
                           <h4> {movie.title} </h4>
                           <div className={styles['movie-buttons-container']}>
-                            <Link to={`/Trailer/${movie.trailerLink[0].key}`}>
+                          <Link to={movie.trailerLink?.[0]?.key ? `/Trailer/${movie.trailerLink[0].key}` : '#'}>
                               <div className={styles['play-button-icon-container']}>
                                 <FontAwesomeIcon className={styles['play-button-icon']} icon={faCirclePlay} />
                               </div>
