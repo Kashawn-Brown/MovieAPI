@@ -285,7 +285,7 @@ li.person-card {
 
 .movie-reviews-container {
     /* width: 90vw; */
-    height: 200px;
+    height: 150px;
     width: 100%;
     display: flex;
     justify-content: center;

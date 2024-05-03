@@ -32,6 +32,29 @@ export const getUserValid = async (req, res) => {
     }
 
 }
+
+export const getUserReview = async (req, res) => {
+
+    try {
+
+        const userId = req.user.userId;
+        const movieId = req.params.movieId
+
+        const review = await Review.findOne({ "userId": userId, "movieInfo.movieId": movieId});
+
+        if(!review)
+        {
+            return res.status(404).json({message: 'User has not reviewed this movie'})
+        }
+        
+        return res.status(200).json(review)
+
+    }catch (error) {
+        console.error(error);
+    }
+
+}
+
 export const inWatched = async (req, res) => {
 
     try {

@@ -3,13 +3,16 @@ const router = express.Router();
 
 import { authenticateToken } from '../routes/authorizationMiddleware.js';
 
-import { getUser, getUserValid, inWatched, inWatchlist, inFavourites, } from '../controllers/user.js'
+import { getUser, getUserValid, getUserReview, inWatched, inWatchlist, inFavourites, } from '../controllers/user.js'
 
 // Get User watchlist
 router.get('/getUser/', authenticateToken, getUser)
 
 // Get if User has valid token
 router.get('/getUserValid/', authenticateToken, getUserValid)
+
+// Get if User has valid token
+router.get('/getUserReview/:movieId', authenticateToken, getUserReview)
 
 // Get if a movie is in a Users Watchlist or not
 router.get('/inWatched/:movieId', authenticateToken, inWatched)

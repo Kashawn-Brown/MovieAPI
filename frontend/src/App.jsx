@@ -19,6 +19,8 @@ import NotFound from './components/NotFound'
 function App() {
 
   const [movies, setMovies] = useState();
+  const user = JSON.parse(localStorage.getItem('User'))
+
   
   const getMovies = async (source) => {
     try

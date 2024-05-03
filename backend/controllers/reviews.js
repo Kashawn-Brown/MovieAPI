@@ -116,22 +116,14 @@ export const deleteReview = async (req, res) => {
         
         const user = await User.findOne({ _id: userId });
 
-        if(!movie)
-        {
-            return res.status(404).json({message: 'Movie Not found'})
-        }        
-        
-        if(!user)
-        {
-            return res.status(404).json({message: 'User Not found'})
-        }
+        if(!movie) return res.status(404).json({message: 'Movie Not found'})
+      
+        if(!user) return res.status(404).json({message: 'User Not found'})
 
         const existingReview = await Review.findOne({ "movieInfo.movieId": movieId, userId });
 
-        if (!existingReview) 
-        {
-            return res.status(400).json({ message: 'You have not reviewed this movie' });
-        }
+        if (!existingReview) return res.status(400).json({ message: 'You have not reviewed this movie' });
+        
 
         // Remove the review from the Movie document's reviews array
         // Assuming movie.reviews is an array of review IDs
@@ -145,9 +137,9 @@ export const deleteReview = async (req, res) => {
         // If you're keeping a list or average of ratings in the Movie document, update that here as well
 
         // Remove the review ID from the User document's reviewIds array
-        const reviewIndexInUser = user.reviewIds.findIndex(reviewId => reviewId.equals(existingReview._id));
+        const reviewIndexInUser = user.reviews.findIndex(review => review.reviewId.equals(existingReview._id));
         if (reviewIndexInUser > -1) {
-            user.reviewIds.splice(reviewIndexInUser, 1);
+            user.reviews.splice(reviewIndexInUser, 1);
             await user.save();
         }
 
