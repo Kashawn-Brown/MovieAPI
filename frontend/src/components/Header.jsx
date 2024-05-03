@@ -10,77 +10,35 @@ const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // console.log(isAuthenticated);
-    // const user = JSON.parse(localStorage.getItem('User'));
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('User')))
-    // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    //Check if user token remains valid
+    //Check for user token
     useEffect(() => {
         // console.log('Location changed:', location.pathname);
         // console.log('User:', user);
 
-    // const source = axios.CancelToken.source();
-    //   // Your action here
-    //   // console.log('Location changed:', location.pathname);
-
-    //   const checkAuthentication = async () => {
-    //     // Logic to check if the user is authenticated
-    //     // This could be based on a valid token existence and validity
-    //     try {
         setUser(JSON.parse(localStorage.getItem('User')))
-            const jwtToken = user?.token
+        const jwtToken = user?.token
 
-            // if (jwtToken) {
-            //     const response = await api.get(`user/getUserValid`, {
-            //       cancelToken: source.token, 
-            //       headers: {
-            //           'Content-Type': 'application/json',
-            //           'x-auth-token': jwtToken
-            //       }
-            //     });
-            //     setIsAuthenticated(response.data === true);
-            // }
-            // else{
-            //   localStorage.removeItem('User');
-            //   setIsAuthenticated(false);
-            // }
-
-            if(jwtToken) 
-            {
-                const decodedToken = jwtDecode(jwtToken);
-                // setIsAuthenticated(true)
-          
-                if (decodedToken.exp * 1000 < new Date().getTime()) logout();
-            }
-        // } catch (error) {
-        //     console.error('Error checking authentication:', error);
-        //     localStorage.removeItem('User');
-        //     setIsAuthenticated(false);
-        // }
-    // };
-    
-    // checkAuthentication();
+        if(jwtToken) 
+        {
+            const decodedToken = jwtDecode(jwtToken);        
+            if (decodedToken.exp * 1000 < new Date().getTime()) logout();
+        }
   }, [location]);
 
   const handleLogout = () => {
     localStorage.removeItem('User');
     setUser(null)
-    // setIsAuthenticated(false);
-    navigate(`/login`) // Or to login page
-    // Additional logout logic
-
+    navigate(`/login`) // Go to login page
   };
+
   const logout = () => {
     localStorage.removeItem('User');
     setUser(null)
-    // setIsAuthenticated(false);
-    // Additional logout logic
-
   };
 
   return (
-
     <Navbar bg="dark" variant="dark" expand="lg">
         <Container fluid>
             <Navbar.Brand href="/" style={{"color":'gold'}}>
@@ -95,12 +53,10 @@ const Header = () => {
                 >
                     <NavLink className ="nav-link" to="/">Home</NavLink>
                     <NavLink className="nav-link" to="/movies">Movies</NavLink>
-                    {/* <NavLink className="nav-link" to="/movies" end>Movies</NavLink> */}
                     <NavLink className ="nav-link" to="/tv">TV Shows</NavLink>
                     <NavLink className ="nav-link" to="/watchList">Watch List</NavLink>      
                 </Nav>
-                {/* <Button href="/login" variant="outline-info" className="me-2">Login</Button>
-                <Button href="/login" variant="outline-info">Register</Button> */}
+
                 {user ? (
                     <>
                         <Dropdown drop="start">
@@ -110,8 +66,6 @@ const Header = () => {
                             <Dropdown.Menu>
                                 <Dropdown.Item href="#">My Account</Dropdown.Item>
                                 <Dropdown.Item as="button" onClick={handleLogout} > Logout </Dropdown.Item>
-                                {/* <Dropdown.Divider />
-                                <Dropdown.Item href="#">Something else here</Dropdown.Item> */}
                             </Dropdown.Menu>
                         </Dropdown>
                     </>

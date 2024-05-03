@@ -4,25 +4,22 @@ import styles from '../styles/Movies.module.css';
 import api from '../api/axiosConfig'
 
 const Movies = ({movies}) => {
-    // console.log(movies)
-    // const location = useLocation();
-    // var movies = location.state?.movies;
-    const navigate = useNavigate();
+  // console.log(movies)
+  const navigate = useNavigate();
 
 
-    // Extract all genres from movies and flatten the array
-    const allGenres = movies?.reduce((genres, movie) => {
-        movie.genres.forEach(genre => {
-            if (!genres.some(existingGenre => existingGenre.genreId === genre.genreId)) 
-            {
-                genres.push({ genreId: genre.genreId, genre: genre.genre });
-            }
-        });
-        return genres.sort((a, b) => a.genre.localeCompare(b.genre));;
-    }, []);
+  // Extract all genres from movies and flatten the array
+  const allGenres = movies?.reduce((genres, movie) => {
+      movie.genres.forEach(genre => {
+          if (!genres.some(existingGenre => existingGenre.genreId === genre.genreId)) 
+          {
+              genres.push({ genreId: genre.genreId, genre: genre.genre });
+          }
+      });
+      return genres.sort((a, b) => a.genre.localeCompare(b.genre));;
+  }, []);
 
 // console.log(allGenres)
-
 
   const handleGenreClick = async (genre) => {
     try {
