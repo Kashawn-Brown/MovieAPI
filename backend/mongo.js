@@ -13,7 +13,7 @@ const database = process.env.MONGO_DATABASE
 
 // Building mongoDb URI
 const mongodbURI = `mongodb+srv://${user}:${password}@${cluster}/${database}`
-console.log(mongodbURI)
+// console.log(mongodbURI)
 
 
 
@@ -42,7 +42,7 @@ async function getMovies()
     // Setting the configurations for my Get request (Getting the current list of the most popular movies)
     const movieOptions = {
       method: 'GET',
-      url: 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1',
+      url: 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=3',
       headers: {
         accept: 'application/json',
         Authorization: 'Bearer ' + apiKey
@@ -50,7 +50,22 @@ async function getMovies()
     };
 
     // Making the request and putting into a response variable
-    const response = await axios.request(movieOptions);
+      let retries = 3;
+      let response = null
+  while (retries > 0) {
+    try {
+       response = await axios.request(movieOptions, { timeout: 30000 });
+      // Process the response
+      break; // Break out of the retry loop if request succeeds
+    } catch (error) {
+      if (error.code === 'ECONNRESET' && retries > 0) {
+        retries--;
+        console.log(`Retrying request. ${retries} retries left.`);
+      } else {
+        throw error; // Re-throw the error if it's not an ECONNRESET or no retries left
+      }
+    }
+  }
     // console.log(response)
 
     // Getting all "The Movie Database" Ids of the movies that will be stored 
@@ -69,7 +84,7 @@ async function getMovies()
       Object.assign(movie, movieInfo, moviePeople, movieTrailer, moviePictures);
     }
 
-    console.log(movies);
+    // console.log(movies);
 
 
     // Testing implementations using just the first movie in response
@@ -100,11 +115,11 @@ async function getMovies()
     // console.log(movies.splice(0,3))
 
 
-    await Movie.insertMany(movies, { timeout: 30000 })
-    console.log("Movies stored in MongoDB")
+    // await Movie.insertMany(movies, { timeout: 30000 })
+    // console.log("Movies stored in MongoDB")
 
     // Add movies to the database if they do not exist
-    // await addNewMovies(movies); // (1)
+    await addNewMovies(movies); // (1)
 
 
 

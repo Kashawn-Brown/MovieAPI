@@ -12,6 +12,21 @@ const MoviesGenre = () => {
     const  currentGenre  = useParams().genre;
     // console.log(currentGenre)
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [moviesPerPage] = useState(18);  // Adjust the number of items per page as needed
+  
+    const indexOfLastMovie = currentPage * moviesPerPage;
+    const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
+    const currentMovies = movies?.slice(indexOfFirstMovie, indexOfLastMovie);
+  
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  
+    const pageNumbers = [];
+    for (let i = 1; i <= Math.ceil(movies.length / moviesPerPage); i++) {
+        pageNumbers.push(i);
+    }
+  
+
     const navigate = useNavigate();
 
 // console.log(allGenres)
@@ -42,7 +57,7 @@ const handleGenreClick = async (genre) => {
       </div>
       <div className={styles['movies']}>
       <div className={styles['movies-grid']}>
-        {movies?.map((movie) => (
+        {currentMovies?.map((movie) => (
           <div key={movie.tmdbId} className={styles['movie-card']}>
             <Link to={`/movie/${movie.tmdbId}`}>
               <img src={movie.poster} alt={movie.title} className={styles['movie-image']} />
@@ -53,6 +68,13 @@ const handleGenreClick = async (genre) => {
           </div>
         ))}
       </div>
+      <ul className={styles['pagination']}>
+          {pageNumbers.map(number => (
+            <li key={number} onClick={() => paginate(number)} style={{ fontWeight: number === currentPage ? 'bold' : 'normal' }}>
+              {number}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

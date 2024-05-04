@@ -4,8 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import styles from '../styles/Movie.module.css';
 import Rating from '@mui/material/Rating';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck, faBookmark, faHeart, faVideo } from "@fortawesome/free-solid-svg-icons";
 import { Alert, Button, FloatingLabel, Form, InputGroup, Tab, Tabs, } from 'react-bootstrap';
 import MovieInfo from './MoviePage/MovieInfo'
 import CastCrew from './MoviePage/CastCrew'
@@ -33,10 +31,7 @@ const Movie = () => {
     const [anonymous, setAnonymous] = useState(false);
 
     const [error, setError] = useState(null);
-    const [message, setMessage] = useState(null);
     const [haveError, setHaveError] = useState(false)
-
-
 
     const getMovie = async (source) =>{
         //Get movie information
@@ -55,7 +50,6 @@ const Movie = () => {
             }
         } 
     } 
-
 
     const getUserReview = async (source) => {
         try 
@@ -118,7 +112,6 @@ const Movie = () => {
         getMovie(source);
         if(user)
         {
-            // getUserLists(source);
             setAuthor(user.userDetails.userName)
             user.userDetails.reviews.forEach(review => {
                 if (review.movieId === movieId) 
@@ -175,7 +168,7 @@ const Movie = () => {
                 console.error(error);
                 // Handle login error (e.g., display error message)
         }
-      };
+    };
     const deleteReview = async (e) => {
         e.preventDefault();
         try {
@@ -199,7 +192,6 @@ const Movie = () => {
         }
 
     };
-
 
     // Function to handle click event on the document
     const handleClick = () => {
@@ -231,6 +223,7 @@ const Movie = () => {
                         <Button className={styles['see-all-reviews-button']} onClick={() => navigate(`/movie/${movieId}/reviews`)}>See All Reviews</Button>
                         </div>
                     </section>
+
                     <section className={styles['create-review-container']}>
                         <div className={styles['create']}>
                             <div className={`${styles["login"]} ${!user ? styles.active : ''}`} > 
@@ -243,7 +236,7 @@ const Movie = () => {
                             <div className={`${styles["create-review"]} ${(user && !hasReview) ? styles.active : ''}`} ><br/>
                                 <Form onSubmit={sendReview}>
                                     <div className={styles['create-review-user']}>
-                                        <InputGroup style={{ width: '500px', borderRadius: "0.375rem", backgroundColor: "white"}}>
+                                        <InputGroup style={{ width: '700px', borderRadius: "0.375rem", backgroundColor: "white"}}>
                                             <div title="Use this to make your review anonymous" style={{ alignSelf: 'center', padding: "0px 12px" }}>
                                                 <Form.Check 
                                                     type="checkbox" 
@@ -258,21 +251,21 @@ const Movie = () => {
                                         name="user-rating" 
                                         value={4.5} 
                                         precision={0.5}
-                                        size="medium"
+                                        size="large"
                                         onChange={(e, newValue) => { setRating(newValue); }}  
                                         /> <br/>
                                     </div>
                                     <div className={styles['create-review-content-container']}>
                                         <div className={styles['create-review-heading']}>
                                             {/* <input type="text" placeholder="" /> */}
-                                            <Form.Control type="text" placeholder="Review headline" style={{ width: '500px' }} value={heading} onChange={(e) => setHeading(e.target.value)}/> <br/>
+                                            <Form.Control type="text" placeholder="Review headline" style={{ width: '700px' }} value={heading} onChange={(e) => setHeading(e.target.value)}/> <br/>
                                         </div>
                                         <div className={styles['create-review-content']}>
                                             {/* <textarea placeholder="Write your review..." /> */}
                                             <FloatingLabel
                                                 controlId="floatingTextarea"
                                                 label="Write your review...">
-                                                <Form.Control as="textarea" label="Write your review..." style={{ height: '100px', width: '500px' }} value={content} onChange={(e) => setContent(e.target.value)}/>
+                                                <Form.Control as="textarea" label="Write your review..." style={{ height: '100px', width: '700px' }} value={content} onChange={(e) => setContent(e.target.value)}/>
                                             </FloatingLabel>
                                         </div>
                                     </div> <br/>
