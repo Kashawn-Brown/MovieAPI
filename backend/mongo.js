@@ -1,6 +1,8 @@
-const mongoose = require('mongoose');
-const axios = require('axios');
-require('dotenv').config({ path: '../.env' });
+import mongoose from 'mongoose';
+import axios from 'axios';
+// Getting access to .env file
+import dotenv from 'dotenv';
+dotenv.config({ path: '../.env' });
 
 // Retrieving sensitive information from .env file
 const apiKey = process.env.API_KEY;
@@ -11,6 +13,7 @@ const database = process.env.MONGO_DATABASE
 
 // Building mongoDb URI
 const mongodbURI = `mongodb+srv://${user}:${password}@${cluster}/${database}`
+// console.log(mongodbURI)
 
 
 
@@ -24,7 +27,7 @@ db.once('open', () => {
 
 
 // Use Schema set up for storing the Movies in database
-const Movie = require('./models/movieSchema');
+import Movie from './models/movieSchema.js';
 
 
 //Function to get all the movies I will have in my catalog
@@ -33,13 +36,13 @@ async function getMovies()
   try
   {
     // Removing any movies currently in my database to repopulate
-    // await Movie.deleteMany({}) // Later will iplement no movies to be removed, but only adding movies that are new to the response (1)
-    // console.log('Existing Movies deleted from MongoDB'); // (1)
+    //  await Movie.deleteMany({}) // Later will iplement no movies to be removed, but only adding movies that are new to the response (1)
+    //  console.log('Existing Movies deleted from MongoDB'); // (1)
 
     // Setting the configurations for my Get request (Getting the current list of the most popular movies)
     const movieOptions = {
       method: 'GET',
-      url: 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1',
+      url: 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=3',
       headers: {
         accept: 'application/json',
         Authorization: 'Bearer ' + apiKey
@@ -47,7 +50,23 @@ async function getMovies()
     };
 
     // Making the request and putting into a response variable
-    const response = await axios.request(movieOptions);
+      let retries = 3;
+      let response = null
+  while (retries > 0) {
+    try {
+       response = await axios.request(movieOptions, { timeout: 30000 });
+      // Process the response
+      break; // Break out of the retry loop if request succeeds
+    } catch (error) {
+      if (error.code === 'ECONNRESET' && retries > 0) {
+        retries--;
+        console.log(`Retrying request. ${retries} retries left.`);
+      } else {
+        throw error; // Re-throw the error if it's not an ECONNRESET or no retries left
+      }
+    }
+  }
+    // console.log(response)
 
     // Getting all "The Movie Database" Ids of the movies that will be stored 
     const movies = response.data.results.map(item => {
@@ -96,7 +115,7 @@ async function getMovies()
     // console.log(movies.splice(0,3))
 
 
-    // await Movie.insertMany(movies)
+    // await Movie.insertMany(movies, { timeout: 30000 })
     // console.log("Movies stored in MongoDB")
 
     // Add movies to the database if they do not exist
@@ -169,7 +188,7 @@ async function getMoviesInfo(movie)
     let releaseYear = -1
     if(movieData.release_date)
     {
-      release = new Date(movieData.release_date);
+      const release = new Date(movieData.release_date);
       releaseDate = release.toLocaleDateString();
       releaseYear = release.getFullYear()
     }
@@ -299,7 +318,7 @@ async function getMoviesTrailer(movie)
 
     // console.log(movieData)
 
-    trailerLinks ={ 
+    const trailerLinks ={ 
       trailerLink: [],
       videos: []
     } 
@@ -392,5 +411,5 @@ async function getMoviesPictures(movie)
 
 
 
-getMovies()
+getMovies();
 

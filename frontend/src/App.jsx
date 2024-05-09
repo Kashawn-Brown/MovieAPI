@@ -1,8 +1,9 @@
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import api from './api/axiosConfig'
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 import Layout from './components/Layout'
 import Home from './components/Home'
@@ -18,14 +19,13 @@ import NotFound from './components/NotFound'
 function App() {
 
   const [movies, setMovies] = useState();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const location = useLocation();
+  const user = JSON.parse(localStorage.getItem('User'))
 
-  const getMovies = async (source) =>{
-
-    try{
-
-      const response = await api.get("/api/v1/movies", { cancelToken: source.token });
+  
+  const getMovies = async (source) => {
+    try
+    {
+      const response = await api.get("/movies", { cancelToken: source.token });
 
       setMovies(response.data)
 
@@ -42,13 +42,8 @@ function App() {
   }
 
   useEffect(() => {
-    console.log("using")
-    // When component mounts or updates, cancel previous requests and create a new cancel token
     const source = axios.CancelToken.source();
-    // console.log("getting movies")
     getMovies(source);
-
-
 
     // Cleanup function to cancel ongoing requests when the component unmounts
     return () => {
@@ -57,52 +52,13 @@ function App() {
 
   }, [])
 
-  useEffect(() => {
-
-    const source = axios.CancelToken.source();
-      // Your action here
-      // console.log('Location changed:', location.pathname);
-
-      const checkAuthentication = async () => {
-        // Logic to check if the user is authenticated
-        // This could be based on a valid token existence and validity
-        try {
-            const jwtToken = localStorage.getItem('jwtToken');
-            if (jwtToken) {
-                const response = await api.get(`/api/v1/user/getUserValid`, {
-                  cancelToken: source.token, 
-                  headers: {
-                      'Content-Type': 'application/json',
-                      'x-auth-token': jwtToken
-                  }
-                });
-                setIsAuthenticated(response.data === true);
-            }
-        } catch (error) {
-            console.error('Error checking authentication:', error);
-            setIsAuthenticated(false);
-        }
-    };
-    
-    checkAuthentication();
-  }, [location]);
-
-  const handleLogout = () => {
-    localStorage.removeItem('jwtToken');
-    setIsAuthenticated(false);
-    // Additional logout logic
-  };
-
-
-
-
   return (
     <div className="App">
-      <Header isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+      <Header />
       <Routes>
         <Route path="/" element={ <Layout/> } >
           <Route path="/" element={ <Home movies={movies} /> } />
-          <Route path="/login" element={ <Login/> } />
+          <Route path="/login" element={!user ? <Login /> : <Navigate to="/" replace />} />
           <Route path="/movies" element={ <Movies movies={movies} /> } />
           <Route path="/movies/genre/:genre" element={ <MoviesGenre/> } />
           <Route path="/movie/:movieId" element={ <Movie/> } />

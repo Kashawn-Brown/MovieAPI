@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -36,9 +36,13 @@ const userSchema = new Schema({
             moviePoster: {type: String, ref: "Movie", required:true}
         // }
     }],
-    reviewIds: [{ type: Schema.Types.ObjectId, ref: "Review" }]
+    reviews: 
+    [{ 
+        reviewId: {type: Schema.Types.ObjectId, ref: "Review"},
+        movieId: {type: String, ref: "Movie", required:true}
+    }]
 })
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+export default User;

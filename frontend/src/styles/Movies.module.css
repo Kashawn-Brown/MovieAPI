@@ -46,9 +46,9 @@
     padding: 0 20px
 }
 
-@media (min-width: 1400px) {
+@media (min-width: 1600px) {
     .movies-grid {
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(6, 1fr);
     }
 }
 
@@ -109,3 +109,16 @@
     }
   } */
   
+  .pagination {
+    display: flex;
+    list-style: none;
+    justify-content: center;
+    padding-left: 0px;
+    padding-top: 15px;
+  }
+  
+  .pagination li {
+    margin: 0 10px;
+    cursor: pointer;
+    font-size: 20px;
+  }

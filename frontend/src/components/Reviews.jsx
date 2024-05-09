@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import api from '../api/axiosConfig'
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation, useParams  } from 'react-router-dom';
 import Rating from '@mui/material/Rating';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,14 +8,30 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import styles from '../styles/Reviews.module.css';
 
 const Reviews = () => {
+    const { movieId } = useParams();
+    const [movie, setMovie] = useState(null);
+    const [reviews, setReviews] = useState(null);
 
-    const location = useLocation();
-    var movie = location.state?.movie;
-    var reviews = location.state?.reviews;
+    useEffect(() => { 
 
-    console.log(reviews)
-    console.log(movie)
-    // const navigate = useNavigate();
+        const fetchMovieAndReviews = async () => {
+            //Get movie information
+            try {
+
+                const movieResponse  = await api.get(`/movies/${movieId}`);
+                setMovie(movieResponse .data)
+                // console.log(response.data)
+
+                const reviewsResponse = await api.get(`/movies/reviews/getReviews/${movieId}`);
+                setReviews(reviewsResponse.data);
+
+            } catch (error) {
+                console.error('Failed to fetch data', error);
+            } 
+        }
+        fetchMovieAndReviews()
+        
+      }, [movieId])
 
 
   return (
@@ -22,21 +39,21 @@ const Reviews = () => {
         <div className={styles["container"]}>
             <section className={styles["movie-banner"]}>
                 <div className={styles["movie-poster"]}>
-                <Link to={`/movie/${movie.tmdbId}`}><img src={movie.poster} alt={movie.title} className={styles["movie-image"]} /> </Link>
+                <Link to={`/movie/${movie?.tmdbId}`}><img src={movie?.poster} alt={movie?.title} className={styles["movie-image"]} /> </Link>
                 </div>
                 <div className={styles['movie-title-back']}>
                     <div className={styles['movie-title']}>
-                        <Link to={`/movie/${movie.tmdbId}`} style={{"textDecoration": "none", "color": "inherit", "fontWeight": "bold"}} >
+                        <Link to={`/movie/${movie?.tmdbId}`} style={{"textDecoration": "none", "color": "inherit", "fontWeight": "bold"}} >
                             <h1 className={styles['title']}>
-                                {`${movie.title}`}
+                                {`${movie?.title}`}
                                 <span className={styles['year']}> 
-                                    {`(${movie.releaseYear})`} 
+                                    {`(${movie?.releaseYear})`} 
                                 </span>
                             </h1> 
                         </Link>
                     </div>
                     <div className={styles['back-button']}>
-                        <Link to={`/movie/${movie.tmdbId}`} style={{"textDecoration": "none", "color": "inherit", "fontWeight": "bold"}} >
+                        <Link to={`/movie/${movie?.tmdbId}`} style={{"textDecoration": "none", "color": "inherit", "fontWeight": "bold"}} >
                             <FontAwesomeIcon icon={faArrowLeft} /> 
                             <span className={styles['back-text']}> Back to movie page</span>
                         </Link>

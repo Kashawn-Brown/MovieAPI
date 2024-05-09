@@ -1,0 +1,155 @@
+.movie-info-container {
+    width: 100%;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    background-image: linear-gradient(to right, rgba(31.5, 31.5, 31.5, 1) calc((50vw - 170px) - 340px), rgba(31.5, 31.5, 31.5, 0.84) 50%, rgba(31.5, 31.5, 31.5, 0.84) 100%);
+}
+
+.movie-poster-container {
+    display: flex;
+    align-items: center;
+
+}
+
+.movie-poster {
+    width: 300px;
+    height: 450px;
+    overflow: hidden;
+    border-radius: 8px;
+    margin: 20px;
+
+
+}
+
+.movie-image {
+    width: 100%;
+    height: 100%;
+
+}
+
+.movie-information-container {
+    width: 60vw; /*55vw*/
+    max-width: 800px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    margin-left: 50px;
+
+}
+
+.movie-information {
+    height: 450px;
+
+}
+
+.movie-information-title {
+    padding-top: 15px;
+    width: fit-content;
+
+}
+
+.movie-title {
+    font-size: 2em; /* Increase title size */
+    font-weight: bold; /* Make the font thicker */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+    margin-bottom: 10px; /* Space between title and button */
+}
+
+.release-year {
+    font-weight: 400; /* Ensures the font weight is normal, not bold or anything else */
+    color: rgba(255, 255, 255, 0.8);
+    margin-left: 2px;
+}
+
+.movie-status {
+    font-size: medium;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.8);
+    margin-left: 2px;
+}
+
+.movie-release-runtime {
+    font-size: small;
+    font-weight: 400;
+    margin-top: -8px;
+    color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: left;
+    margin-left: 15px;
+}
+
+.dot {
+    /* font-size: xx-large;
+    line-height: 1;
+    margin: -11px 8px; */
+    font-size: x-large;
+    line-height: 1;
+    margin: -6px 3px;
+    }
+
+/* .runtime::before {
+
+    font-size: 1.1em;
+    line-height: 1;
+    content: "•";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 7px;
+    display: inline-flex;
+    align-content: center;
+    align-items: center;
+    z-index: -1;
+} */
+
+.movie-information-user-buttons {
+    display: flex;
+    align-items: center;
+
+}
+
+.icon {
+    font-size: 25px;
+}
+
+/* An id so that it overrides the default button rules */
+/* Test rules on inspect then add here */
+#user-button {
+    margin: 2px 5px;
+    --bs-btn-bg: transparent;
+    border: none;
+    font-size: 20px;
+    --bs-btn-color: #0dcaf0;
+    --bs-btn-hover-bg: rgb(33, 37, 41);
+}
+
+.movie-overview {
+
+}
+
+.movie-information-extra {
+
+}
+
+.movie-info-p2-container-bg {
+    height: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+}
+
+.movie-info-p2-container {
+    width: 100%;
+    min-width: 400px;
+    /* max-width: 1500px; */
+    /* min-height: 1500px; */
+}
+
+.movie-extra-info-container {
+    
+
+}
+

@@ -1,12 +1,21 @@
 //importing
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require("body-parser");
-const cors = require('cors');
-const path = require("path");
+import express from 'express';
+import mongoose from 'mongoose';
+import bodyParser from "body-parser";
+import cors from 'cors';
+import path from "path";
+import { fileURLToPath } from 'url';
 
 // Getting access to .env file
-require('dotenv').config({ path: '../.env' });
+import dotenv from 'dotenv';
+dotenv.config({ path: '../.env' });
+
+import movieRoutes from './routes/movies.js';
+import reviewRoutes from './routes/reviews.js';
+import authorizationRoutes from './routes/authorization.js';
+import userListRoutes from './routes/lists.js';
+import userRoutes from './routes/user.js';
+
 
 
 //creating instance of Express application
@@ -15,17 +24,27 @@ app.use(cors());
 app.use(bodyParser.json()); //or can apparently use express.json() ~ bodyparser.json vs express.json
 
 //Setting up routes for different parts of applictaion
-app.use('/api/v1/movies', require('./routes/movies'));
-app.use('/api/v1/movies/reviews', require('./routes/reviews'));
-app.use('/api/v1/authorization', require('./routes/authorization'));
-app.use('/api/v1/list', require('./routes/lists'));
-app.use('/api/v1/user', require('./routes/user'));
+// app.use('/movies', movieRoutes)
+app.use('/api/v1/movies', movieRoutes);
+app.use('/api/v1/movies/reviews', reviewRoutes);
+app.use('/api/v1/authorization', authorizationRoutes);
+app.use('/api/v1/list', userListRoutes);
+app.use('/api/v1/user', userRoutes);
 
 
-app.use(express.static(path.join(__dirname, 'frontend/build')));
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
-});
+// app.use(express.static(path.join(__dirname, 'frontend/build')));
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+// });
+
+// Deployment Code
+// const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// app.use(express.static(path.join(__dirname, 'frontend', 'build')));
+
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
+// });
 
 
 
@@ -47,7 +66,10 @@ const database = process.env.MONGO_DATABASE
 
 // Building mongoDb URI
 const mongodbURI = `mongodb+srv://${user}:${password}@${cluster}/${database}`
-
+// console.log(user)
+// console.log(password)
+// console.log(cluster)
+// console.log(database)
 // Connect to MongoDB
 mongoose.connect(mongodbURI);
 const db = mongoose.connection;

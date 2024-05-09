@@ -18,19 +18,24 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            console.log(loginEmail)
-            console.log(loginPassword)
-            const response = await api.post('api/v1/authorization/login', {
+            // console.log(loginEmail)
+            // console.log(loginPassword)
+            const response = await api.post('/authorization/login', {
             email: loginEmail,
             password: loginPassword,
             });
-            console.log(response.data);
+            // console.log(response.data);
             // Handle successful login (e.g., store token in localStorage)
     
-            if(response.data.token)
+            if(response.data)
             {
                 //const data = await response.json();
-                localStorage.setItem('jwtToken', response.data.token); // Store the JWT token in local storage
+                const { password, ...userDetails } = response.data.existingUser;
+                // const profile = response.data.existingUser;
+                const token = response.data.token;
+                const user = { userDetails, token };
+
+                localStorage.setItem('User', JSON.stringify(user)); // Store the JWT token in local storage
         
                 navigate('/', { replace: true }); // Navigate to the home page
                 //window.location.href = '/' // Another way to go to home page
@@ -57,19 +62,22 @@ const Login = () => {
             return;
         }
         try {
-            const response = await api.post(`api/v1/authorization/register`, {
+            const response = await api.post(`/authorization/register`, {
             userName: registerUserName,
             email: registerEmail,
             password: registerPassword,
             });
-            console.log(response.data);
+            // console.log(response.data);
             // Handle successful login (e.g., store token in localStorage)
     
-            if(response.data.token)
+            if(response.data)
             {
-                //const data = await response.json();
-                localStorage.setItem('jwtToken', response.data.token); // Store the JWT token in local storage
-        
+                const { password, ...userDetails } = response.data.newUser;
+                const token = response.data.token;
+                const user = { userDetails, token };
+
+                localStorage.setItem('User', JSON.stringify(user)); // Store the JWT token in local storage
+
                 navigate('/', { replace: true }); // Navigate to the home page
                 //window.location.href = '/' // Another way to go to home page
             }
