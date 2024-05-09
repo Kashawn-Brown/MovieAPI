@@ -13,7 +13,7 @@ const Movies = ({movies}) => {
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
   const currentMovies = movies?.slice(indexOfFirstMovie, indexOfLastMovie);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber) => {setCurrentPage(pageNumber); window.scrollTo(0, 0);}
 
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(movies?.length / moviesPerPage); i++) {
